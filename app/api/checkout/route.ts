@@ -34,10 +34,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Already paid' }, { status: 400 });
     }
 
-    // Create Stripe checkout session
-    const checkoutUrl = await createCheckoutSession(quizId);
+    // TEMPORARY: Skip Stripe and mark as paid directly for testing
+    const { error: updateError } = await supabase
+      .from('quiz_sessions')
+      .update({ paid: true })
+      .eq('id', quizId);
 
-    return NextResponse.json({ url: checkoutUrl });
+    if (updateError) {
+      console.error('Error updating payment status:', updateError);
+      return NextResponse.json({ error: 'Error processing payment' }, { status: 500 });
+    }
+
+    // Redirect back to results with success
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    return NextResponse.json({ url: `${baseUrl}/results/${quizId}?success=true` });
   } catch (error) {
     console.error('Checkout error:', error);
     return NextResponse.json({ error: 'Error creating checkout' }, { status: 500 });
