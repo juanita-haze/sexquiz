@@ -124,7 +124,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
               {session.partner_b_name || 'partner'} to finish.
             </p>
 
-            <div className="card p-6 text-left">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 text-left">
               <p className="text-gray-600 text-sm mb-3">Share this link with your partner:</p>
               <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-3">
                 <input
@@ -198,7 +198,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
       <main className="flex-1 py-8 px-4 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           {/* Compatibility Score */}
-          <section id="compatibility" className="card p-6 mb-8">
+          <section id="compatibility" className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
             <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
               🏆 Your Compatibility Score
             </h2>
@@ -241,7 +241,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
           </section>
 
           {/* Shared Desires */}
-          <section id="desires" className="card p-6">
+          <section id="desires" className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center gap-2">
               🔥 Your Shared Desires
             </h2>
@@ -337,7 +337,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
 
           {/* Thank You Section */}
           <section className="grid md:grid-cols-3 gap-6 mt-8">
-            <div className="card p-6">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
               <h3 className="font-bold text-gray-800 mb-2">🙏 Thank You!</h3>
               <p className="text-gray-600 text-sm mb-4">
                 Thanks for taking ThatSexQuiz. We hope you found something new to try with your partner. If you liked the quiz, please tell your friends about it!
@@ -346,7 +346,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
                 🖨 Print Results
               </button>
             </div>
-            <div className="card p-6">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
               <h3 className="font-bold text-gray-800 mb-2">💬 Feedback</h3>
               <p className="text-gray-600 text-sm mb-4">
                 Is there anything you wish we had asked about? Let us know! All feedback is private.
@@ -355,7 +355,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
                 Leave us feedback
               </button>
             </div>
-            <div className="card p-6">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
               <h3 className="font-bold text-gray-800 mb-2">🔒 Privacy</h3>
               <p className="text-gray-600 text-sm">
                 For privacy and security reasons we delete all sensitive information after 90 days. If you would like to save your results, use the print button.

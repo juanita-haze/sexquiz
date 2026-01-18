@@ -124,13 +124,13 @@ export default function SharePage({ params }: { params: Promise<{ id: string }> 
           {/* Hand Over Device */}
           <button
             onClick={handleStartPartnerB}
-            className="w-full btn-primary py-4 text-lg"
+            className="w-full bg-gradient-to-r from-[#e57373] to-[#ef5350] text-white font-semibold rounded-lg hover:from-[#ef5350] hover:to-[#e53935] transition-all py-4 text-lg"
           >
             ➡️ Hand over this device and start {partnerBName}&apos;s quiz now▶
           </button>
 
           {/* See Results */}
-          <div className="mt-12 card p-6">
+          <div className="mt-12 bg-white rounded-xl shadow-lg border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
               See your results
             </h2>

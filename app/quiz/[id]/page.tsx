@@ -194,7 +194,7 @@ export default function QuizPage({ params }: { params: Promise<{ id: string }> }
             {currentCategory.questions.map((question) => (
               <div
                 key={question.id}
-                className="card p-4 flex flex-col md:flex-row md:items-center gap-4"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col md:flex-row md:items-center gap-4"
               >
                 <p className="flex-1 text-gray-800">
                   {personalizeQuestion(question.text, partnerName || 'your partner')}
@@ -204,8 +204,10 @@ export default function QuizPage({ params }: { params: Promise<{ id: string }> }
                     <button
                       key={option.value}
                       onClick={() => handleAnswer(question.id, option.value)}
-                      className={`emoji-btn ${
-                        answers[question.id] === option.value ? 'selected' : ''
+                      className={`w-10 h-10 rounded-lg text-xl flex items-center justify-center transition-all ${
+                        answers[question.id] === option.value
+                          ? 'bg-[#e57373] scale-110 shadow-md'
+                          : 'bg-gray-100 hover:bg-gray-200'
                       }`}
                       title={option.label}
                     >
@@ -235,7 +237,7 @@ export default function QuizPage({ params }: { params: Promise<{ id: string }> }
             <button
               onClick={handleSaveAndContinue}
               disabled={isSubmitting}
-              className="flex-1 btn-primary py-3 text-lg disabled:opacity-50"
+              className="flex-1 bg-gradient-to-r from-[#e57373] to-[#ef5350] text-white font-semibold rounded-lg hover:from-[#ef5350] hover:to-[#e53935] transition-all py-3 text-lg disabled:opacity-50"
             >
               {isSubmitting
                 ? 'Submitting...'
@@ -290,7 +292,7 @@ export default function QuizPage({ params }: { params: Promise<{ id: string }> }
 
             <button
               onClick={() => setShowShareModal(false)}
-              className="w-full btn-primary py-3"
+              className="w-full bg-gradient-to-r from-[#e57373] to-[#ef5350] text-white font-semibold rounded-lg hover:from-[#ef5350] hover:to-[#e53935] transition-all py-3"
             >
               ➡️ Start My Quiz
             </button>

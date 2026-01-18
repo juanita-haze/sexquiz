@@ -63,7 +63,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#f5f5f5]">
       <Header />
 
       {/* Hero Section */}
@@ -83,9 +83,12 @@ export default function Home() {
       </section>
 
       {/* Quiz Form */}
-      <section className="py-8 px-4 -mt-6">
+      <section className="py-8 px-4 -mt-6 relative z-10">
         <div className="max-w-2xl mx-auto">
-          <form onSubmit={handleStartQuiz} className="card p-6">
+          <form
+            onSubmit={handleStartQuiz}
+            className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
+          >
             <div className="grid md:grid-cols-2 gap-6">
               {/* Your Info */}
               <div>
@@ -100,7 +103,7 @@ export default function Home() {
                       value={yourName}
                       onChange={(e) => setYourName(e.target.value)}
                       placeholder="Your name"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#e57373]"
                       maxLength={50}
                     />
                   </div>
@@ -114,7 +117,7 @@ export default function Home() {
                         onClick={() => setYourAnatomy('male')}
                         className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
                           yourAnatomy === 'male'
-                            ? 'bg-blue-100 text-blue-700'
+                            ? 'bg-blue-100 text-blue-700 font-medium'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
@@ -125,7 +128,7 @@ export default function Home() {
                         onClick={() => setYourAnatomy('female')}
                         className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
                           yourAnatomy === 'female'
-                            ? 'bg-pink-100 text-pink-700'
+                            ? 'bg-pink-100 text-pink-700 font-medium'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
@@ -149,7 +152,7 @@ export default function Home() {
                       value={theirName}
                       onChange={(e) => setTheirName(e.target.value)}
                       placeholder="Partner's name"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#e57373]"
                       maxLength={50}
                     />
                   </div>
@@ -163,7 +166,7 @@ export default function Home() {
                         onClick={() => setTheirAnatomy('male')}
                         className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
                           theirAnatomy === 'male'
-                            ? 'bg-blue-100 text-blue-700'
+                            ? 'bg-blue-100 text-blue-700 font-medium'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
@@ -174,7 +177,7 @@ export default function Home() {
                         onClick={() => setTheirAnatomy('female')}
                         className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
                           theirAnatomy === 'female'
-                            ? 'bg-pink-100 text-pink-700'
+                            ? 'bg-pink-100 text-pink-700 font-medium'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
@@ -188,12 +191,12 @@ export default function Home() {
 
             {/* Terms checkbox */}
             <div className="mt-6 text-center text-sm text-gray-500">
-              <label className="flex items-center justify-center gap-2">
+              <label className="flex items-center justify-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isAgeVerified}
                   onChange={(e) => setIsAgeVerified(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300"
+                  className="w-4 h-4 rounded border-gray-300 accent-[#e57373]"
                 />
                 <span>
                   By starting the quiz you and your partner agree to the{' '}
@@ -213,7 +216,7 @@ export default function Home() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-6 btn-primary py-3 text-lg disabled:opacity-50"
+              className="w-full mt-6 bg-gradient-to-r from-[#e57373] to-[#ef5350] text-white py-3 px-6 rounded-lg font-semibold text-lg hover:from-[#ef5350] hover:to-[#e53935] transition-all disabled:opacity-50 shadow-md"
             >
               {isLoading ? 'Starting...' : '💕 Start the Quiz'}
             </button>
@@ -228,7 +231,7 @@ export default function Home() {
       {/* Spice It Up Section */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#e57373] text-sm font-medium mb-2">SPICE IT UP</p>
+          <p className="text-[#e57373] text-sm font-medium mb-2 uppercase tracking-wide">Spice it up</p>
           <h2 className="text-2xl font-bold text-gray-800 mb-8">
             Sex quiz for couples. Find shared sexual desires.
           </h2>
@@ -238,7 +241,7 @@ export default function Home() {
               <h3 className="font-semibold text-gray-800 mb-2">
                 👍 Trusted by Thousands
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm mb-2">
                 &quot;ThatSexQuiz has been taken by 12,409 couples in the last month, 3,025 in the last week, and 611 in the last 24 hours.&quot; Info is only used to customize your quiz and create cool statistics.
               </p>
               <Link href="/statistics" className="text-[#e57373] text-sm hover:underline">
@@ -249,7 +252,7 @@ export default function Home() {
               <h3 className="font-semibold text-gray-800 mb-2">
                 ⏱ Takes Only 10min
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm mb-2">
                 Questions were written by licensed therapists who specialize in relationships and sex. Results for the basic category are free.
               </p>
               <Link href="/questions" className="text-[#e57373] text-sm hover:underline">
@@ -260,7 +263,7 @@ export default function Home() {
               <h3 className="font-semibold text-gray-800 mb-2">
                 🔒 Privacy Guaranteed
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm mb-2">
                 We take your privacy seriously. No sign-up required. All information is anonymous. Your answers are encrypted in transit.
               </p>
               <Link href="/privacy" className="text-[#e57373] text-sm hover:underline">
@@ -272,16 +275,16 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-12 px-4 bg-gray-50">
+      <section className="py-12 px-4 bg-[#f5f5f5]">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#e57373] text-sm font-medium mb-2">HOW IT WORKS</p>
+          <p className="text-[#e57373] text-sm font-medium mb-2 uppercase tracking-wide">How it works</p>
           <h2 className="text-2xl font-bold text-gray-800 mb-8">
             Take the quiz separately. Explore results together.
           </h2>
 
           <div className="space-y-6">
             <div className="flex gap-4">
-              <div className="font-bold text-[#e57373]">1.</div>
+              <div className="font-bold text-[#e57373] text-lg">1.</div>
               <div>
                 <h3 className="font-semibold text-gray-800">Start the quiz</h3>
                 <p className="text-gray-600 text-sm">
@@ -290,7 +293,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex gap-4">
-              <div className="font-bold text-[#e57373]">2.</div>
+              <div className="font-bold text-[#e57373] text-lg">2.</div>
               <div>
                 <h3 className="font-semibold text-gray-800">Take the quiz separately</h3>
                 <p className="text-gray-600 text-sm">
@@ -299,7 +302,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex gap-4">
-              <div className="font-bold text-[#e57373]">3.</div>
+              <div className="font-bold text-[#e57373] text-lg">3.</div>
               <div>
                 <h3 className="font-semibold text-gray-800">See your matches together</h3>
                 <p className="text-gray-600 text-sm">
@@ -314,24 +317,28 @@ export default function Home() {
       {/* Categories Section */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#e57373] text-sm font-medium mb-2">ALL QUESTIONS</p>
+          <p className="text-[#e57373] text-sm font-medium mb-2 uppercase tracking-wide">All questions</p>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Everything You&apos;ll see</h2>
           <p className="text-gray-600 mb-8">
             The list below contains all questions asked in our couples&apos; comparison quiz. There are {categories.length} categories and {TOTAL_QUESTIONS} questions.
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {categories.map((category) => (
-              <details key={category.id} className="card p-4 cursor-pointer">
-                <summary className="flex items-center justify-between">
+              <details
+                key={category.id}
+                className="bg-white rounded-lg border border-gray-200 overflow-hidden group"
+              >
+                <summary className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50">
                   <div className="flex items-center gap-3">
                     <span className="text-xl">{category.emoji}</span>
                     <span className="font-semibold text-gray-800">{category.name}</span>
                     <span className="text-gray-400 text-sm">({category.questions.length})</span>
                   </div>
+                  <span className="text-gray-400 group-open:rotate-90 transition-transform">▶</span>
                 </summary>
-                <div className="mt-4 pl-9 text-gray-600 text-sm">
-                  <p className="mb-2 italic">{getCategoryDescription(category.id)}</p>
+                <div className="p-4 pt-0 border-t border-gray-100 bg-gray-50">
+                  <p className="text-gray-600 text-sm italic">{getCategoryDescription(category.id)}</p>
                 </div>
               </details>
             ))}

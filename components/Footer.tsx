@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="footer py-8 px-4 mt-auto">
+    <footer className="bg-[#e57373] py-8 px-4 mt-auto">
       <div className="max-w-4xl mx-auto text-center">
         <p className="text-white/90 mb-2">
           ThatSexQuiz.com - Uncover your shared desires.
