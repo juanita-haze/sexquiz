@@ -3,11 +3,18 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { TOTAL_QUESTIONS, categories } from '@/lib/questions';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { categories, TOTAL_QUESTIONS } from '@/lib/questions';
+
+type Anatomy = 'male' | 'female';
 
 export default function Home() {
   const router = useRouter();
-  const [name, setName] = useState('');
+  const [yourName, setYourName] = useState('');
+  const [yourAnatomy, setYourAnatomy] = useState<Anatomy>('female');
+  const [theirName, setTheirName] = useState('');
+  const [theirAnatomy, setTheirAnatomy] = useState<Anatomy>('male');
   const [isAgeVerified, setIsAgeVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -16,13 +23,13 @@ export default function Home() {
     e.preventDefault();
     setError('');
 
-    if (!name.trim()) {
-      setError('Please enter your name');
+    if (!yourName.trim() || !theirName.trim()) {
+      setError('Please enter both names');
       return;
     }
 
     if (!isAgeVerified) {
-      setError('You must be 18 or older to take this quiz');
+      setError('You must both be 18 or older to take this quiz');
       return;
     }
 
@@ -32,7 +39,12 @@ export default function Home() {
       const response = await fetch('/api/quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim() }),
+        body: JSON.stringify({
+          partnerAName: yourName.trim(),
+          partnerAAnatomy: yourAnatomy,
+          partnerBName: theirName.trim(),
+          partnerBAnatomy: theirAnatomy,
+        }),
       });
 
       const data = await response.json();
@@ -51,126 +63,298 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="max-w-lg w-full">
-        {/* Logo/Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Couple Quiz
+    <div className="min-h-screen flex flex-col">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-b from-[#e57373] to-[#ef5350] text-white py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="text-6xl mb-4">💕</div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            Find Something New to Try Tonight!
           </h1>
-          <p className="text-xl text-white/80">
-            Discover what you both want
+          <p className="text-lg text-white/90 mb-2">
+            Discover what you and your partner secretly want, only mutual YESes will ever show up 😊
+          </p>
+          <p className="text-white/80">
+            Join the <span className="underline font-medium">THOUSANDS</span> of happy couples who&apos;ve taken the quiz!
           </p>
         </div>
+      </section>
 
-        {/* Features */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-white/20">
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">🔒</span>
+      {/* Quiz Form */}
+      <section className="py-8 px-4 -mt-6">
+        <div className="max-w-2xl mx-auto">
+          <form onSubmit={handleStartQuiz} className="card p-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Your Info */}
               <div>
-                <h3 className="font-semibold text-white">Private & Secure</h3>
-                <p className="text-white/70 text-sm">
-                  Only mutual matches are revealed. Your secrets stay safe.
-                </p>
+                <h3 className="text-center text-gray-500 text-sm font-medium mb-4">Your Info:</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">
+                      👤 Name (or nickname)
+                    </label>
+                    <input
+                      type="text"
+                      value={yourName}
+                      onChange={(e) => setYourName(e.target.value)}
+                      placeholder="Your name"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                      maxLength={50}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-2">
+                      Anatomy 🔒
+                    </label>
+                    <div className="flex rounded-lg overflow-hidden border border-gray-300">
+                      <button
+                        type="button"
+                        onClick={() => setYourAnatomy('male')}
+                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
+                          yourAnatomy === 'male'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-white text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>♂</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setYourAnatomy('female')}
+                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
+                          yourAnatomy === 'female'
+                            ? 'bg-pink-100 text-pink-700'
+                            : 'bg-white text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>♀</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Their Info */}
+              <div>
+                <h3 className="text-center text-gray-500 text-sm font-medium mb-4">Their Info:</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">
+                      👤 Name (or nickname)
+                    </label>
+                    <input
+                      type="text"
+                      value={theirName}
+                      onChange={(e) => setTheirName(e.target.value)}
+                      placeholder="Partner's name"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                      maxLength={50}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-2">
+                      Anatomy 🔒
+                    </label>
+                    <div className="flex rounded-lg overflow-hidden border border-gray-300">
+                      <button
+                        type="button"
+                        onClick={() => setTheirAnatomy('male')}
+                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
+                          theirAnatomy === 'male'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-white text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>♂</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTheirAnatomy('female')}
+                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
+                          theirAnatomy === 'female'
+                            ? 'bg-pink-100 text-pink-700'
+                            : 'bg-white text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>♀</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">💕</span>
-              <div>
-                <h3 className="font-semibold text-white">{TOTAL_QUESTIONS} Questions</h3>
-                <p className="text-white/70 text-sm">
-                  Across {categories.length} categories including intimacy, role play, and more.
-                </p>
-              </div>
+            {/* Terms checkbox */}
+            <div className="mt-6 text-center text-sm text-gray-500">
+              <label className="flex items-center justify-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={isAgeVerified}
+                  onChange={(e) => setIsAgeVerified(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300"
+                />
+                <span>
+                  By starting the quiz you and your partner agree to the{' '}
+                  <Link href="/terms" className="text-[#e57373] hover:underline">
+                    terms and conditions
+                  </Link>{' '}
+                  and are both 18 years old or older.
+                </span>
+              </label>
             </div>
 
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">✨</span>
-              <div>
-                <h3 className="font-semibold text-white">No Judgment</h3>
-                <p className="text-white/70 text-sm">
-                  If you both said yes, it&apos;s a match. If not, no one ever knows.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Start Form */}
-        <form onSubmit={handleStartQuiz} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-white/80 mb-2 text-sm">
-              Your name (or nickname)
-            </label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-white/40 focus:ring-2 focus:ring-white/50 focus:border-transparent"
-              maxLength={50}
-            />
-          </div>
-
-          <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="age"
-              checked={isAgeVerified}
-              onChange={(e) => setIsAgeVerified(e.target.checked)}
-              className="mt-1 w-5 h-5 rounded border-white/20 bg-white/10 text-pink-500 focus:ring-pink-500"
-            />
-            <label htmlFor="age" className="text-white/80 text-sm">
-              I confirm that I am 18 years or older and consent to viewing adult content.
-            </label>
-          </div>
-
-          {error && (
-            <p className="text-red-300 text-sm bg-red-500/20 px-4 py-2 rounded-lg">{error}</p>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-4 bg-white text-purple-600 font-bold rounded-xl hover:bg-white/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-lg"
-          >
-            {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                Starting...
-              </span>
-            ) : (
-              'Start Quiz'
+            {error && (
+              <p className="text-red-500 text-sm text-center mt-4">{error}</p>
             )}
-          </button>
-        </form>
 
-        {/* Footer */}
-        <div className="mt-8 text-center text-white/50 text-sm">
-          <p className="mb-2">Data deleted after 90 days</p>
-          <Link href="/privacy" className="underline hover:text-white/70">
-            Privacy Policy
-          </Link>
+            {/* Start Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full mt-6 btn-primary py-3 text-lg disabled:opacity-50"
+            >
+              {isLoading ? 'Starting...' : '💕 Start the Quiz'}
+            </button>
+
+            <p className="text-center text-gray-400 text-sm mt-3">
+              📋 {TOTAL_QUESTIONS} Questions ⏱ 10 minutes
+            </p>
+          </form>
         </div>
-      </div>
-    </main>
+      </section>
+
+      {/* Spice It Up Section */}
+      <section className="py-12 px-4 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-[#e57373] text-sm font-medium mb-2">SPICE IT UP</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-8">
+            Sex quiz for couples. Find shared sexual desires.
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-2">
+                👍 Trusted by Thousands
+              </h3>
+              <p className="text-gray-600 text-sm">
+                &quot;ThatSexQuiz has been taken by 12,409 couples in the last month, 3,025 in the last week, and 611 in the last 24 hours.&quot; Info is only used to customize your quiz and create cool statistics.
+              </p>
+              <Link href="/statistics" className="text-[#e57373] text-sm hover:underline">
+                View Statistics »
+              </Link>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-2">
+                ⏱ Takes Only 10min
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Questions were written by licensed therapists who specialize in relationships and sex. Results for the basic category are free.
+              </p>
+              <Link href="/questions" className="text-[#e57373] text-sm hover:underline">
+                View Questions »
+              </Link>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-2">
+                🔒 Privacy Guaranteed
+              </h3>
+              <p className="text-gray-600 text-sm">
+                We take your privacy seriously. No sign-up required. All information is anonymous. Your answers are encrypted in transit.
+              </p>
+              <Link href="/privacy" className="text-[#e57373] text-sm hover:underline">
+                Learn More »
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-12 px-4 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-[#e57373] text-sm font-medium mb-2">HOW IT WORKS</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-8">
+            Take the quiz separately. Explore results together.
+          </h2>
+
+          <div className="space-y-6">
+            <div className="flex gap-4">
+              <div className="font-bold text-[#e57373]">1.</div>
+              <div>
+                <h3 className="font-semibold text-gray-800">Start the quiz</h3>
+                <p className="text-gray-600 text-sm">
+                  Enter some basic information about you and your partner to get started.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="font-bold text-[#e57373]">2.</div>
+              <div>
+                <h3 className="font-semibold text-gray-800">Take the quiz separately</h3>
+                <p className="text-gray-600 text-sm">
+                  You and your partner will take the quiz separately. You&apos;ll each get a quiz link so you can take the quiz on separate devices if you want.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="font-bold text-[#e57373]">3.</div>
+              <div>
+                <h3 className="font-semibold text-gray-800">See your matches together</h3>
+                <p className="text-gray-600 text-sm">
+                  You&apos;ll both see the same results. The results will show your shared sexual desires. The one&apos;s you don&apos;t match on will remain hidden.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Section */}
+      <section className="py-12 px-4 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-[#e57373] text-sm font-medium mb-2">ALL QUESTIONS</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Everything You&apos;ll see</h2>
+          <p className="text-gray-600 mb-8">
+            The list below contains all questions asked in our couples&apos; comparison quiz. There are {categories.length} categories and {TOTAL_QUESTIONS} questions.
+          </p>
+
+          <div className="space-y-4">
+            {categories.map((category) => (
+              <details key={category.id} className="card p-4 cursor-pointer">
+                <summary className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">{category.emoji}</span>
+                    <span className="font-semibold text-gray-800">{category.name}</span>
+                    <span className="text-gray-400 text-sm">({category.questions.length})</span>
+                  </div>
+                </summary>
+                <div className="mt-4 pl-9 text-gray-600 text-sm">
+                  <p className="mb-2 italic">{getCategoryDescription(category.id)}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
   );
+}
+
+function getCategoryDescription(categoryId: string): string {
+  const descriptions: Record<string, string> = {
+    basics: "Let's Warm Things Up - These are everyday desires.",
+    roleplay: "Adult pretend playtime - I'll play the bass, you'll play the angler.",
+    anal: "Questions about butt stuff! We've got your back.",
+    positions: "Kama Sutra Anyone? - Doggy style, Reverse Cowgirl, and much more!",
+    bdsm: "Bondage, Discipline, Submission and Masochism - What's so sexy about BDSM? Beats me.",
+    frequency: "When, Where, and How Often - Where should we meet up? See you at the library ;)",
+    toys: "What toys sound interesting? Shopping online together is fun!",
+    body: "All the finest details... If you think Chewbacca is hairy just wait till you see my wookie.",
+    group: "Sharing is caring! The more the merrier!",
+  };
+  return descriptions[categoryId] || '';
 }

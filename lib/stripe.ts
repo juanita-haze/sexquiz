@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-export const PRICE_AMOUNT = 999; // $9.99 in cents
+export const PRICE_AMOUNT = 495; // $4.95 in cents
 export const CURRENCY = 'usd';
 
 // Lazy initialization to avoid build-time errors

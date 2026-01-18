@@ -34,10 +34,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name } = body;
+    const { partnerAName, partnerAAnatomy, partnerBName, partnerBAnatomy } = body;
 
-    if (!name || typeof name !== 'string' || name.trim().length === 0) {
-      return NextResponse.json({ error: 'Name is required' }, { status: 400 });
+    // Validate input
+    if (!partnerAName || !partnerBName) {
+      return NextResponse.json({ error: 'Both names are required' }, { status: 400 });
     }
 
     const supabase = createServerClient();
@@ -45,7 +46,10 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('quiz_sessions')
       .insert({
-        partner_a_name: name.trim().substring(0, 50),
+        partner_a_name: partnerAName.trim().substring(0, 50),
+        partner_a_anatomy: partnerAAnatomy || 'female',
+        partner_b_name: partnerBName.trim().substring(0, 50),
+        partner_b_anatomy: partnerBAnatomy || 'male',
       })
       .select()
       .single();

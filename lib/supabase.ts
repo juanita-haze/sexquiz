@@ -13,11 +13,15 @@ export function createServerClient() {
 }
 
 // Types for our database
+export type Anatomy = 'male' | 'female';
+
 export interface QuizSession {
   id: string;
   partner_a_name: string | null;
-  partner_b_name: string | null;
+  partner_a_anatomy: Anatomy | null;
   partner_a_answers: Record<string, number> | null;
+  partner_b_name: string | null;
+  partner_b_anatomy: Anatomy | null;
   partner_b_answers: Record<string, number> | null;
   paid: boolean;
   stripe_session_id: string | null;

@@ -1,18 +1,14 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import Link from 'next/link';
-
-interface QuizSession {
-  id: string;
-  partner_a_name: string | null;
-  partner_b_name: string | null;
-  partner_a_answers: Record<string, number> | null;
-  partner_b_answers: Record<string, number> | null;
-}
+import { useRouter } from 'next/navigation';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { QuizSession } from '@/lib/supabase';
 
 export default function SharePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const router = useRouter();
   const [session, setSession] = useState<QuizSession | null>(null);
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +32,13 @@ export default function SharePage({ params }: { params: Promise<{ id: string }> 
     fetchSession();
   }, [id]);
 
+  // Check if partner B has completed
+  useEffect(() => {
+    if (session?.partner_b_answers) {
+      router.push(`/results/${id}`);
+    }
+  }, [session, id, router]);
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
@@ -46,132 +49,106 @@ export default function SharePage({ params }: { params: Promise<{ id: string }> 
     }
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Take our couples quiz!',
-          text: `${session?.partner_a_name} wants you to take this intimate quiz together!`,
-          url: shareUrl,
-        });
-      } catch (err) {
-        console.error('Share failed:', err);
-      }
-    } else {
-      handleCopy();
-    }
+  const handleStartPartnerB = () => {
+    router.push(`/quiz/${id}`);
   };
 
   if (isLoading) {
     return (
-      <main className="min-h-screen flex items-center justify-center p-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/30 border-t-white"></div>
-      </main>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-[#e57373]"></div>
+        </main>
+        <Footer />
+      </div>
     );
   }
 
-  // Check if partner B has already completed
-  if (session?.partner_b_answers) {
-    return (
-      <main className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full text-center">
-          <span className="text-6xl mb-4 block">🎉</span>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Your partner completed the quiz!
-          </h1>
-          <p className="text-white/70 mb-8">
-            {session.partner_b_name} has finished. View your results now!
-          </p>
-          <Link
-            href={`/results/${id}`}
-            className="inline-block w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white font-bold hover:from-pink-600 hover:to-purple-600 transition-all"
-          >
-            View Results
-          </Link>
-        </div>
-      </main>
-    );
-  }
+  const partnerBName = session?.partner_b_name || 'your partner';
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Success message */}
-        <div className="text-center mb-8">
-          <span className="text-6xl mb-4 block">✅</span>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Quiz Complete!
+    <div className="min-h-screen flex flex-col">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-b from-[#e57373] to-[#ef5350] text-white py-12 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <span className="text-6xl mb-4 block">⏳</span>
+          <h1 className="text-3xl font-bold mb-4">
+            Now it&apos;s {partnerBName}&apos;s turn!
           </h1>
-          <p className="text-white/70">
-            Now share this link with your partner
+          <p className="text-white/90">
+            Great work! Your answers are saved. To unlock your shared results, {partnerBName} just needs to finish their part.
           </p>
         </div>
+      </section>
 
-        {/* Share card */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 mb-6">
-          <p className="text-white/70 text-sm mb-3">Share this link:</p>
-
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={shareUrl}
-              readOnly
-              className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white text-sm truncate"
-            />
-            <button
-              onClick={handleCopy}
-              className="px-4 py-3 bg-white/20 border border-white/20 rounded-xl text-white hover:bg-white/30 transition-all"
-            >
-              {copied ? '✓' : '📋'}
-            </button>
+      {/* Share Options */}
+      <main className="flex-1 py-12 px-4 bg-gray-50">
+        <div className="max-w-2xl mx-auto">
+          {/* Share Link */}
+          <div className="mb-8">
+            <p className="text-gray-600 mb-3">
+              💌 Send this link so they can play on another device:
+            </p>
+            <div className="flex gap-2">
+              <div className="flex-1 flex items-center gap-2 bg-white border border-gray-300 rounded-lg px-4 py-3">
+                <span className="text-gray-400">✈️</span>
+                <input
+                  type="text"
+                  value={shareUrl}
+                  readOnly
+                  className="flex-1 text-gray-700 bg-transparent outline-none text-sm"
+                />
+                <button
+                  onClick={handleCopy}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  {copied ? '✓' : '📋'}
+                </button>
+              </div>
+            </div>
+            {copied && (
+              <p className="text-green-600 text-sm mt-2">Link copied!</p>
+            )}
           </div>
 
-          {copied && (
-            <p className="text-green-400 text-sm mt-2">Link copied!</p>
-          )}
-        </div>
+          {/* Or Divider */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="flex-1 h-px bg-gray-300"></div>
+            <span className="text-gray-400 font-medium">OR</span>
+            <div className="flex-1 h-px bg-gray-300"></div>
+          </div>
 
-        {/* Share button */}
-        <button
-          onClick={handleShare}
-          className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white font-bold hover:from-pink-600 hover:to-purple-600 transition-all mb-4"
-        >
-          Share with Partner
-        </button>
-
-        {/* Instructions */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-          <h3 className="font-semibold text-white mb-4">What happens next?</h3>
-          <ol className="space-y-3 text-white/70 text-sm">
-            <li className="flex gap-3">
-              <span className="text-pink-400 font-bold">1.</span>
-              <span>Your partner takes the quiz using your link</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="text-pink-400 font-bold">2.</span>
-              <span>We compare your answers privately</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="text-pink-400 font-bold">3.</span>
-              <span>Only mutual matches are revealed</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="text-pink-400 font-bold">4.</span>
-              <span>Your secrets stay safe!</span>
-            </li>
-          </ol>
-        </div>
-
-        {/* Check results link */}
-        <div className="text-center mt-6">
-          <Link
-            href={`/results/${id}`}
-            className="text-white/60 text-sm hover:text-white/80 underline"
+          {/* Hand Over Device */}
+          <button
+            onClick={handleStartPartnerB}
+            className="w-full btn-primary py-4 text-lg"
           >
-            Check if partner completed →
-          </Link>
+            ➡️ Hand over this device and start {partnerBName}&apos;s quiz now▶
+          </button>
+
+          {/* See Results */}
+          <div className="mt-12 card p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              See your results
+            </h2>
+            <p className="text-gray-600">
+              👀 When you&apos;ve both finished,{' '}
+              <button
+                onClick={() => window.location.reload()}
+                className="text-[#e57373] hover:underline"
+              >
+                refresh this page
+              </button>{' '}
+              to see your results.
+            </p>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+
+      <Footer />
+    </div>
   );
 }
