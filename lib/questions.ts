@@ -223,6 +223,33 @@ export const categories: Category[] = [
       { id: 'g10', text: 'I would be open to discussing ethical non-monogamy', category: 'group' },
     ],
   },
+  {
+    id: 'bonus',
+    name: 'Bonus: Extra Spicy 🌶️',
+    emoji: '🔥',
+    questions: [
+      { id: 'x1', text: 'I want my partner to be rougher with me in bed', category: 'bonus' },
+      { id: 'x2', text: 'I want to be completely used and ravished by my partner', category: 'bonus' },
+      { id: 'x3', text: 'I fantasize about my partner taking me without warning', category: 'bonus' },
+      { id: 'x4', text: 'I want to try being called degrading names during sex', category: 'bonus' },
+      { id: 'x5', text: 'I want to call my partner degrading names during sex', category: 'bonus' },
+      { id: 'x6', text: 'I fantasize about being "forced" (consensual non-consent)', category: 'bonus' },
+      { id: 'x7', text: 'I want my partner to hold me down and have their way with me', category: 'bonus' },
+      { id: 'x8', text: 'I want to spit or be spat on during sex', category: 'bonus' },
+      { id: 'x9', text: 'I want to try "free use" scenarios where I\'m always available', category: 'bonus' },
+      { id: 'x10', text: 'I fantasize about my partner finishing inside me', category: 'bonus' },
+      { id: 'x11', text: 'I want to beg my partner to let me finish', category: 'bonus' },
+      { id: 'x12', text: 'I want my partner to beg me to let them finish', category: 'bonus' },
+      { id: 'x13', text: 'I want to try having sex while one of us is on the phone/video call', category: 'bonus' },
+      { id: 'x14', text: 'I fantasize about teasing my partner under the table in public', category: 'bonus' },
+      { id: 'x15', text: 'I want to be edged for hours before being allowed to finish', category: 'bonus' },
+      { id: 'x16', text: 'I want to try a day where I must do whatever my partner says sexually', category: 'bonus' },
+      { id: 'x17', text: 'I fantasize about my partner using me while I pretend to sleep', category: 'bonus' },
+      { id: 'x18', text: 'I want to wear something sexy under my clothes when we go out', category: 'bonus' },
+      { id: 'x19', text: 'I want my partner to secretly control a vibrator on me in public', category: 'bonus' },
+      { id: 'x20', text: 'I fantasize about having a hall pass for one celebrity', category: 'bonus' },
+    ],
+  },
 ];
 
 export const allQuestions: Question[] = categories.flatMap((cat) => cat.questions);

@@ -115,24 +115,24 @@ export default function Home() {
                       <button
                         type="button"
                         onClick={() => setYourAnatomy('male')}
-                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
+                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors text-xl ${
                           yourAnatomy === 'male'
-                            ? 'bg-blue-100 text-blue-700 font-medium'
+                            ? 'bg-purple-100 text-purple-700 font-medium'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
-                        <span>♂</span>
+                        🍆
                       </button>
                       <button
                         type="button"
                         onClick={() => setYourAnatomy('female')}
-                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
+                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors text-xl ${
                           yourAnatomy === 'female'
-                            ? 'bg-pink-100 text-pink-700 font-medium'
+                            ? 'bg-orange-100 text-orange-700 font-medium'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
-                        <span>♀</span>
+                        🍑
                       </button>
                     </div>
                   </div>
@@ -164,24 +164,24 @@ export default function Home() {
                       <button
                         type="button"
                         onClick={() => setTheirAnatomy('male')}
-                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
+                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors text-xl ${
                           theirAnatomy === 'male'
-                            ? 'bg-blue-100 text-blue-700 font-medium'
+                            ? 'bg-purple-100 text-purple-700 font-medium'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
-                        <span>♂</span>
+                        🍆
                       </button>
                       <button
                         type="button"
                         onClick={() => setTheirAnatomy('female')}
-                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors ${
+                        className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 transition-colors text-xl ${
                           theirAnatomy === 'female'
-                            ? 'bg-pink-100 text-pink-700 font-medium'
+                            ? 'bg-orange-100 text-orange-700 font-medium'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
-                        <span>♀</span>
+                        🍑
                       </button>
                     </div>
                   </div>
@@ -362,6 +362,7 @@ function getCategoryDescription(categoryId: string): string {
     toys: "What toys sound interesting? Shopping online together is fun!",
     body: "All the finest details... If you think Chewbacca is hairy just wait till you see my wookie.",
     group: "Sharing is caring! The more the merrier!",
+    bonus: "For the daring couples only... 🔥 Are you brave enough?",
   };
   return descriptions[categoryId] || '';
 }

@@ -316,6 +316,7 @@ function getCategoryDescription(categoryId: string): string {
     toys: "What toys sound interesting? Shopping online together is fun!",
     body: "All the finest details... If you think Chewbacca is hairy just wait till you see my wookie.",
     group: "Sharing is caring! The more the merrier!",
+    bonus: "🔥 EXTRA SPICY 🔥 - Only for the daring! These questions push the boundaries...",
   };
   return descriptions[categoryId] || '';
 }
