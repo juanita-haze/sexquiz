@@ -8,7 +8,7 @@ export default function Footer() {
   const nav = useTranslations('nav');
 
   return (
-    <footer className="bg-[#B85555] py-8 px-4 mt-auto">
+    <footer className="bg-[#8B3A3A] py-8 px-4 mt-auto">
       <div className="max-w-4xl mx-auto text-center">
         <p className="text-white/90 mb-2">
           🌶️ {t('tagline')}

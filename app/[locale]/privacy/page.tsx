@@ -95,7 +95,7 @@ export default function PrivacyPage() {
                 <h2 className="text-xl font-bold text-gray-800 mb-2">{t('contactTitle')}</h2>
                 <p className="text-gray-600">
                   {t('contactText')}{' '}
-                  <Link href="/contact" className="text-[#B85555] hover:underline">
+                  <Link href="/contact" className="text-[#8B3A3A] hover:underline">
                     {t('contactPage')}
                   </Link>{' '}
                   {t('orEmail')} contact@spicyquiz.com.
