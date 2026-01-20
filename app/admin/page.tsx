@@ -198,7 +198,7 @@ export default function AdminPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-2 bg-[#e57373] text-white rounded-lg hover:bg-[#ef5350] disabled:opacity-50"
+                className="w-full py-2 bg-[#a83232] text-white rounded-lg hover:bg-[#8b2828] disabled:opacity-50"
               >
                 {isLoading ? 'Loading...' : 'Login'}
               </button>
@@ -307,7 +307,7 @@ export default function AdminPage() {
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-[#e57373] text-white rounded-lg hover:bg-[#ef5350]"
+                    className="px-4 py-2 bg-[#a83232] text-white rounded-lg hover:bg-[#8b2828]"
                   >
                     {editingId ? 'Update' : 'Create'}
                   </button>
@@ -349,7 +349,7 @@ export default function AdminPage() {
                   referrals.map((referral) => (
                     <tr key={referral.id} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="px-4 py-3">
-                        <span className="font-mono font-bold text-[#e57373]">
+                        <span className="font-mono font-bold text-[#a83232]">
                           {referral.code}
                         </span>
                       </td>

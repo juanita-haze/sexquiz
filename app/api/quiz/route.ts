@@ -34,10 +34,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { partnerAName, partnerAAnatomy, partnerBName, partnerBAnatomy } = body;
+    const { partner_a_name, partner_a_anatomy, partner_b_name, partner_b_anatomy } = body;
 
     // Validate input
-    if (!partnerAName || !partnerBName) {
+    if (!partner_a_name || !partner_b_name) {
       return NextResponse.json({ error: 'Both names are required' }, { status: 400 });
     }
 
@@ -46,16 +46,21 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('quiz_sessions')
       .insert({
-        partner_a_name: partnerAName.trim().substring(0, 50),
-        partner_a_anatomy: partnerAAnatomy || 'female',
-        partner_b_name: partnerBName.trim().substring(0, 50),
-        partner_b_anatomy: partnerBAnatomy || 'male',
+        partner_a_name: partner_a_name.trim().substring(0, 50),
+        partner_a_anatomy: partner_a_anatomy || 'female',
+        partner_b_name: partner_b_name.trim().substring(0, 50),
+        partner_b_anatomy: partner_b_anatomy || 'male',
       })
       .select()
       .single();
 
-    if (error) {
+    if (error || !data) {
       console.error('Supabase error:', error);
+      return NextResponse.json({ error: 'Error creating quiz' }, { status: 500 });
+    }
+
+    if (!data.id) {
+      console.error('Quiz created but no ID returned:', data);
       return NextResponse.json({ error: 'Error creating quiz' }, { status: 500 });
     }
 

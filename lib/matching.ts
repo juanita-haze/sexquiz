@@ -1,4 +1,4 @@
-import { categories, allQuestions, isMatch, getMatchStrength, Question } from './questions';
+import { categoryData, allQuestionIds, isMatch, getMatchStrength, Question } from './questions';
 
 export interface MatchResult {
   question: Question;
@@ -24,12 +24,12 @@ export function calculateMatches(
   const matchesByCategory: Record<string, MatchResult[]> = {};
 
   // Initialize categories
-  categories.forEach((cat) => {
+  categoryData.forEach((cat) => {
     matchesByCategory[cat.id] = [];
   });
 
   // Find all matches
-  allQuestions.forEach((question) => {
+  allQuestionIds.forEach((question) => {
     const answerA = answersA[question.id];
     const answerB = answersB[question.id];
 
@@ -78,7 +78,6 @@ export function calculateMatches(
 
 // Get teaser matches (free preview)
 export function getTeaserMatches(matches: MatchResult[], count: number = 5): MatchResult[] {
-  // Return a mix of perfect and good matches from different categories
   const perfect = matches.filter((m) => m.strength === 'perfect');
   const good = matches.filter((m) => m.strength === 'good');
 
@@ -96,8 +95,8 @@ export function getTeaserMatches(matches: MatchResult[], count: number = 5): Mat
   return teaser;
 }
 
-// Get category name and emoji
-export function getCategoryInfo(categoryId: string): { name: string; emoji: string } | null {
-  const category = categories.find((c) => c.id === categoryId);
-  return category ? { name: category.name, emoji: category.emoji } : null;
+// Get category emoji by ID
+export function getCategoryEmoji(categoryId: string): string {
+  const category = categoryData.find((c) => c.id === categoryId);
+  return category?.emoji || '';
 }
