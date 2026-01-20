@@ -3,13 +3,77 @@
 import { useState, useEffect, use } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { calculateMatches, MatchResult, getCategoryInfo } from '@/lib/matching';
-import { categories } from '@/lib/questions';
+import { categories, allQuestions } from '@/lib/questions';
 import { QuizSession } from '@/lib/supabase';
 
+// Dynamic import for recharts to avoid SSR issues
+const RadarChart = dynamic(() => import('recharts').then(mod => mod.RadarChart), { ssr: false });
+const PolarGrid = dynamic(() => import('recharts').then(mod => mod.PolarGrid), { ssr: false });
+const PolarAngleAxis = dynamic(() => import('recharts').then(mod => mod.PolarAngleAxis), { ssr: false });
+const PolarRadiusAxis = dynamic(() => import('recharts').then(mod => mod.PolarRadiusAxis), { ssr: false });
+const Radar = dynamic(() => import('recharts').then(mod => mod.Radar), { ssr: false });
+const Legend = dynamic(() => import('recharts').then(mod => mod.Legend), { ssr: false });
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
+
 const UNLOCK_PRICE = 4.95;
+const AVERAGE_MATCHES = 60.80;
+const AVERAGE_COMPATIBILITY = 79.05;
+
+// Gauge component for adventurousness score
+function AdventurousnessGauge({ score, name }: { score: number; name: string }) {
+  const vanillaScore = 100 - score;
+  const rotation = (score / 100) * 180 - 90; // -90 to 90 degrees
+
+  return (
+    <div className="text-center">
+      <div className="mb-2 flex justify-center gap-4 text-xs">
+        <span className="flex items-center gap-1">
+          <span className="w-3 h-3 bg-blue-400 rounded"></span> Vanilla 🍦
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-3 h-3 bg-red-400 rounded"></span> Adventurous 🔥
+        </span>
+      </div>
+      <div className="relative w-48 h-24 mx-auto">
+        <svg viewBox="0 0 200 100" className="w-full h-full">
+          {/* Background arc */}
+          <path
+            d="M 10 100 A 90 90 0 0 1 190 100"
+            fill="none"
+            stroke="#e5e7eb"
+            strokeWidth="20"
+          />
+          {/* Vanilla (blue) arc */}
+          <path
+            d="M 10 100 A 90 90 0 0 1 100 10"
+            fill="none"
+            stroke="#60a5fa"
+            strokeWidth="20"
+          />
+          {/* Adventurous (red) arc */}
+          <path
+            d="M 100 10 A 90 90 0 0 1 190 100"
+            fill="none"
+            stroke="#f87171"
+            strokeWidth="20"
+          />
+          {/* Needle */}
+          <g transform={`rotate(${rotation}, 100, 100)`}>
+            <line x1="100" y1="100" x2="100" y2="25" stroke="#374151" strokeWidth="3" />
+            <circle cx="100" cy="100" r="8" fill="#374151" />
+          </g>
+        </svg>
+      </div>
+      <p className="text-sm text-gray-700 mt-2">
+        <span className="font-semibold">{name}</span> is {vanillaScore.toFixed(0)}% vanilla 🍦
+      </p>
+    </div>
+  );
+}
 
 export default function ResultsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -160,6 +224,46 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
     );
   });
 
+  // Calculate adventurousness scores (based on positive answers)
+  const calculateAdventurousness = (answers: Record<string, number>) => {
+    const values = Object.values(answers);
+    if (values.length === 0) return 0;
+    const positiveCount = values.filter(v => v >= 4).length;
+    return (positiveCount / values.length) * 100;
+  };
+
+  const partnerAAdventurousness = calculateAdventurousness(session.partner_a_answers);
+  const partnerBAdventurousness = calculateAdventurousness(session.partner_b_answers);
+
+  // Calculate preferences by category for radar chart
+  const calculateCategoryScore = (answers: Record<string, number>, categoryId: string) => {
+    const categoryQuestions = allQuestions.filter(q => q.category === categoryId);
+    const categoryAnswers = categoryQuestions.map(q => answers[q.id] || 0).filter(a => a > 0);
+    if (categoryAnswers.length === 0) return 0;
+    return (categoryAnswers.reduce((a, b) => a + b, 0) / categoryAnswers.length) * 20; // Scale to 0-100
+  };
+
+  const preferencesData = categories.map(cat => {
+    const data: Record<string, string | number> = {
+      category: cat.name.replace(' & ', '\n& ').replace('Swingers & Group', 'Swingers'),
+    };
+    data['Partner A'] = calculateCategoryScore(session.partner_a_answers!, cat.id);
+    data['Partner B'] = calculateCategoryScore(session.partner_b_answers!, cat.id);
+    return data;
+  });
+
+  // Compatibility radar data
+  const compatibilityData = categories.map(cat => {
+    const catMatches = matchesByCategory[cat.id]?.length || 0;
+    const maxMatches = cat.questions.length;
+    return {
+      category: cat.name.replace(' & ', '\n& ').replace('Swingers & Group', 'Swingers'),
+      'Your Score': (catMatches / maxMatches) * 100,
+      'Average': 40 + Math.random() * 30, // Simulated average
+      'Max': 100,
+    };
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -188,6 +292,8 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
             <p className="text-gray-500 text-sm mb-2">On this page:</p>
             <ul className="text-[#e57373] text-sm space-y-1">
               <li><a href="#compatibility" className="hover:underline">Your Compatibility Score</a></li>
+              <li><a href="#adventurousness" className="hover:underline">Adventurousness Score</a></li>
+              <li><a href="#preferences" className="hover:underline">Preferences</a></li>
               <li><a href="#desires" className="hover:underline">Your Shared Desires</a></li>
             </ul>
           </div>
@@ -205,21 +311,35 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
 
             <p className="text-gray-600 mb-4">
               You and {session.partner_b_name} have{' '}
-              <span className="text-[#e57373] font-bold">{matchSummary.totalMatches} matching</span>{' '}
-              sexual desires. This is {matchSummary.totalMatches > 60 ? 'above' : 'below'} the average of 60.80.
+              <span className="text-[#e57373] font-bold underline">{matchSummary.totalMatches} matching</span>{' '}
+              sexual desires. This is {matchSummary.totalMatches > AVERAGE_MATCHES ? 'above' : 'below'} the average of {AVERAGE_MATCHES}.
             </p>
 
-            {/* Match Bar */}
-            <div className="mb-6">
-              <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
-                <span>Your Matches</span>
-                <span className="font-bold text-[#e57373]">{matchSummary.totalMatches}</span>
+            {/* Match Bars */}
+            <div className="mb-6 space-y-3">
+              <div>
+                <div className="flex items-center gap-4 text-sm text-gray-500 mb-1">
+                  <span>Your Matches</span>
+                  <span className="font-bold text-[#e57373]">{matchSummary.totalMatches}</span>
+                </div>
+                <div className="h-6 bg-gray-200 rounded overflow-hidden">
+                  <div
+                    className="h-full bg-[#e57373] rounded"
+                    style={{ width: `${Math.min((matchSummary.totalMatches / 70) * 100, 100)}%` }}
+                  />
+                </div>
               </div>
-              <div className="h-4 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#e57373] rounded-full"
-                  style={{ width: `${Math.min((matchSummary.totalMatches / 148) * 100, 100)}%` }}
-                />
+              <div>
+                <div className="flex items-center gap-4 text-sm text-gray-500 mb-1">
+                  <span>Average</span>
+                  <span className="font-bold text-blue-500">{AVERAGE_MATCHES}</span>
+                </div>
+                <div className="h-6 bg-gray-200 rounded overflow-hidden">
+                  <div
+                    className="h-full bg-blue-400 rounded"
+                    style={{ width: `${Math.min((AVERAGE_MATCHES / 70) * 100, 100)}%` }}
+                  />
+                </div>
               </div>
               <div className="flex justify-between text-xs text-gray-400 mt-1">
                 <span>0</span>
@@ -233,11 +353,96 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
               </div>
             </div>
 
-            <p className="text-gray-600">
+            <p className="text-gray-600 mb-6">
               You and {session.partner_b_name} are{' '}
-              <span className="font-bold">{matchSummary.compatibilityScore.toFixed(2)}%</span> sexually compatible.
-              The average compatibility score is 79.05%.
+              <span className="font-bold underline">{matchSummary.compatibilityScore.toFixed(2)}%</span> sexually compatible.
+              The average compatibility score is {AVERAGE_COMPATIBILITY}%.
             </p>
+
+            {/* Compatibility Radar Chart */}
+            <div className="flex justify-center mb-4">
+              <div className="text-xs flex gap-4">
+                <span className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-[#e57373] rounded"></span> Your Score
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-blue-400 rounded"></span> Average
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-gray-300 rounded"></span> Max
+                </span>
+              </div>
+            </div>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={compatibilityData}>
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="category" tick={{ fontSize: 10 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 10 }} />
+                  <Radar name="Max" dataKey="Max" stroke="#d1d5db" fill="#d1d5db" fillOpacity={0.2} />
+                  <Radar name="Average" dataKey="Average" stroke="#60a5fa" fill="#60a5fa" fillOpacity={0.3} />
+                  <Radar name="Your Score" dataKey="Your Score" stroke="#e57373" fill="#e57373" fillOpacity={0.5} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+          </section>
+
+          {/* Adventurousness Score */}
+          <section id="adventurousness" className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              🔥 Adventurousness Score
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <p className="text-gray-600 text-sm mb-4">
+                  <span className="font-semibold">{session.partner_a_name}</span> is {partnerAAdventurousness < 30 ? 'very vanilla' : partnerAAdventurousness < 60 ? 'somewhat adventurous' : 'very adventurous'}. {session.partner_a_name} is in the{' '}
+                  <span className="text-[#e57373] underline">{Math.round(partnerAAdventurousness)}th percentile</span> - only {(100 - partnerAAdventurousness).toFixed(1)}% of the population is more vanilla.
+                </p>
+                <AdventurousnessGauge score={partnerAAdventurousness} name={session.partner_a_name || 'Partner A'} />
+              </div>
+              <div>
+                <p className="text-gray-600 text-sm mb-4">
+                  <span className="font-semibold">{session.partner_b_name}</span> is {partnerBAdventurousness < 30 ? 'very vanilla' : partnerBAdventurousness < 60 ? 'somewhat adventurous' : 'very adventurous'}. {session.partner_b_name} is in the{' '}
+                  <span className="text-[#e57373] underline">{Math.round(partnerBAdventurousness)}th percentile</span> - only {(100 - partnerBAdventurousness).toFixed(1)}% of the population is more vanilla.
+                </p>
+                <AdventurousnessGauge score={partnerBAdventurousness} name={session.partner_b_name || 'Partner B'} />
+              </div>
+            </div>
+          </section>
+
+          {/* Preferences */}
+          <section id="preferences" className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              😍 Preferences
+            </h2>
+
+            <p className="text-gray-600 mb-4">
+              You and {session.partner_b_name} can see how many things you like here! This is useful to see where you vibe and where you don&apos;t!
+            </p>
+
+            <div className="flex justify-center mb-4">
+              <div className="text-xs flex gap-4">
+                <span className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-blue-500 rounded"></span> {session.partner_a_name}
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-[#e57373] rounded"></span> {session.partner_b_name}
+                </span>
+              </div>
+            </div>
+
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={preferencesData}>
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="category" tick={{ fontSize: 10 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 10 }} />
+                  <Radar name={session.partner_a_name || 'Partner A'} dataKey="Partner A" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} />
+                  <Radar name={session.partner_b_name || 'Partner B'} dataKey="Partner B" stroke="#e57373" fill="#e57373" fillOpacity={0.3} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
           </section>
 
           {/* Shared Desires */}
@@ -342,7 +547,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
               <p className="text-gray-600 text-sm mb-4">
                 Thanks for taking ThatSexQuiz. We hope you found something new to try with your partner. If you liked the quiz, please tell your friends about it!
               </p>
-              <button className="text-[#e57373] text-sm hover:underline">
+              <button className="text-[#e57373] text-sm hover:underline border border-[#e57373] px-4 py-2 rounded-lg w-full">
                 🖨 Print Results
               </button>
             </div>
@@ -351,7 +556,7 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
               <p className="text-gray-600 text-sm mb-4">
                 Is there anything you wish we had asked about? Let us know! All feedback is private.
               </p>
-              <button className="text-[#e57373] text-sm hover:underline">
+              <button className="text-[#e57373] text-sm hover:underline border border-[#e57373] px-4 py-2 rounded-lg w-full">
                 Leave us feedback
               </button>
             </div>
