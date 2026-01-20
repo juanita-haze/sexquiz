@@ -478,7 +478,7 @@ export default function ResultsPage() {
         </div>
       </section>
 
-      {/* Debug: View Answers */}
+      {/* View Answers Section */}
       <section className="py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-xl shadow-lg p-6">
@@ -493,41 +493,68 @@ export default function ResultsPage() {
             </div>
 
             {showAnswers && (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-2 px-2">Question</th>
-                      <th className="text-center py-2 px-2">{quizData.partner_a_name}</th>
-                      <th className="text-center py-2 px-2">{quizData.partner_b_name}</th>
-                      <th className="text-center py-2 px-2">{t('match')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {categoryData.flatMap((category) =>
-                      category.questions.map((question) => {
-                        const answerA = quizData.partner_a_answers?.[question.id];
-                        const answerB = quizData.partner_b_answers?.[question.id];
-                        const isMatch = answerA !== undefined && answerB !== undefined && answerA >= 4 && answerB >= 4;
+              <div className="relative">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-2 px-2">Question</th>
+                        <th className="text-center py-2 px-2">{quizData.partner_a_name}</th>
+                        <th className="text-center py-2 px-2">{quizData.partner_b_name}</th>
+                        <th className="text-center py-2 px-2">{t('match')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(() => {
+                        const allQuestions = categoryData.flatMap((category) => category.questions);
+                        const freeAnswersCount = 5;
 
-                        return (
-                          <tr key={question.id} className="border-b">
-                            <td className="py-2 px-2 text-gray-700">{q(question.id)}</td>
-                            <td className="text-center py-2 px-2">
-                              {answerA ? answerOptionValues.find((o) => o.value === answerA)?.emoji : '-'}
-                            </td>
-                            <td className="text-center py-2 px-2">
-                              {answerB ? answerOptionValues.find((o) => o.value === answerB)?.emoji : '-'}
-                            </td>
-                            <td className="text-center py-2 px-2">
-                              {isMatch ? '✅' : ''}
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+                        return allQuestions.map((question, index) => {
+                          const answerA = quizData.partner_a_answers?.[question.id];
+                          const answerB = quizData.partner_b_answers?.[question.id];
+                          const isMatch = answerA !== undefined && answerB !== undefined && answerA >= 4 && answerB >= 4;
+                          const isLocked = !isPaid && index >= freeAnswersCount;
+
+                          return (
+                            <tr key={question.id} className={`border-b ${isLocked ? 'relative' : ''}`}>
+                              <td className={`py-2 px-2 text-gray-700 ${isLocked ? 'blur-sm select-none' : ''}`}>
+                                {isLocked ? t('lockedQuestion') : q(question.id)}
+                              </td>
+                              <td className={`text-center py-2 px-2 ${isLocked ? 'blur-sm select-none' : ''}`}>
+                                {isLocked ? '🔒' : (answerA ? answerOptionValues.find((o) => o.value === answerA)?.emoji : '-')}
+                              </td>
+                              <td className={`text-center py-2 px-2 ${isLocked ? 'blur-sm select-none' : ''}`}>
+                                {isLocked ? '🔒' : (answerB ? answerOptionValues.find((o) => o.value === answerB)?.emoji : '-')}
+                              </td>
+                              <td className={`text-center py-2 px-2 ${isLocked ? 'blur-sm select-none' : ''}`}>
+                                {isLocked ? '🔒' : (isMatch ? '✅' : '')}
+                              </td>
+                            </tr>
+                          );
+                        });
+                      })()}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Locked overlay for unpaid users */}
+                {!isPaid && (
+                  <div className="mt-6 p-4 bg-gradient-to-r from-[#8B3A3A]/10 to-[#6B2D2D]/10 border border-[#8B3A3A]/30 rounded-lg text-center">
+                    <div className="text-3xl mb-2">🔒</div>
+                    <p className="text-gray-700 font-medium mb-2">
+                      {t('answersLocked', { count: categoryData.flatMap((c) => c.questions).length - 5 })}
+                    </p>
+                    <p className="text-gray-500 text-sm mb-4">
+                      {t('unlockAnswersDesc')}
+                    </p>
+                    <button
+                      onClick={handlePayment}
+                      className="bg-gradient-to-r from-[#8B3A3A] to-[#6B2D2D] text-white px-6 py-3 rounded-lg font-bold hover:from-[#6B2D2D] hover:to-[#8B3A3A] transition-all shadow-md"
+                    >
+                      🔓 {t('unlockAllAnswers')} - ${finalPrice.toFixed(2)}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
