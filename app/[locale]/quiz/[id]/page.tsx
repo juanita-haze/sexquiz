@@ -116,7 +116,9 @@ export default function QuizPage() {
   };
 
   const handleNextCategory = async () => {
-    if (currentCategoryIndex < categoryData.length - 1) {
+    // Get the correct number of categories based on quiz mode
+    const categories = quizMode === 'quick' ? getQuickQuizCategories() : categoryData;
+    if (currentCategoryIndex < categories.length - 1) {
       setCurrentCategoryIndex((prev) => prev + 1);
       window.scrollTo(0, 0);
     } else {
@@ -217,8 +219,27 @@ export default function QuizPage() {
   // Get categories based on quiz mode
   const quizCategories = quizMode === 'quick' ? getQuickQuizCategories() : categoryData;
   const totalQuestions = quizMode === 'quick' ? QUICK_QUIZ_TOTAL : TOTAL_QUESTIONS;
-  const currentCategory = quizCategories[currentCategoryIndex];
   const totalCategories = quizCategories.length;
+
+  // Ensure currentCategoryIndex is within bounds
+  const safeIndex = Math.min(currentCategoryIndex, Math.max(0, totalCategories - 1));
+  const currentCategory = quizCategories[safeIndex];
+
+  // Safety check - if no category, show loading
+  if (!currentCategory) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#f5f5f5]">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-4xl mb-4">🌶️</div>
+            <p className="text-gray-600">{t('loadingQuiz')}</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   // Show share modal for partner A before starting
   if (showShareModal && currentPartner === 'A') {
