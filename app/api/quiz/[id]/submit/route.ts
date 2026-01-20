@@ -8,7 +8,7 @@ export async function POST(
   try {
     const { id: quizId } = await params;
     const body = await request.json();
-    const { partner, answers } = body;
+    const { partner, answers, email } = body;
 
     if (!quizId || !answers || typeof answers !== 'object' || !partner) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
@@ -49,6 +49,9 @@ export async function POST(
       }
 
       updateData.partner_b_answers = answers;
+      if (email && typeof email === 'string' && email.includes('@')) {
+        updateData.partner_b_email = email.trim().toLowerCase();
+      }
     } else {
       // Partner A submitting
       if (session.partner_a_answers) {
@@ -59,6 +62,9 @@ export async function POST(
       }
 
       updateData.partner_a_answers = answers;
+      if (email && typeof email === 'string' && email.includes('@')) {
+        updateData.partner_a_email = email.trim().toLowerCase();
+      }
     }
 
     // Update the session

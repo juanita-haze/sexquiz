@@ -98,7 +98,16 @@
     "shareModalLinkHint": "Send this link to {partner} if they're on another device.",
     "shareModalSameDevice": "On one device? Take turns, {partner} can start after you finish.",
     "shareModalSkipHint": "You can skip any question. Only things you BOTH say YES to will appear in results.",
-    "startMyQuiz": "Start My Quiz"
+    "startMyQuiz": "Start My Quiz",
+    "emailModalTitle": "Nice work, {name}! 🎉",
+    "emailModalDescA": "You've finished your part! Enter your email to get notified when {partner} completes theirs.",
+    "emailModalDescB": "You've finished! Enter your email to save your results and get exclusive offers.",
+    "emailPlaceholder": "your@email.com",
+    "emailBenefits": "Get notified when results are ready + receive tips to spice up your relationship!",
+    "saveAndContinueEmail": "Save & Continue →",
+    "skipEmail": "Skip for now",
+    "emailPrivacy": "Your email is private. No spam, ever.",
+    "invalidEmail": "Please enter a valid email address"
   },
   "share": {
     "completed": "You completed your part!",

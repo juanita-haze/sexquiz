@@ -38,6 +38,9 @@ export default function QuizPage() {
   const [showMilestone, setShowMilestone] = useState<number | null>(null);
   const [lastMilestone, setLastMilestone] = useState(0);
   const [quizMode, setQuizMode] = useState<'quick' | 'full'>('full');
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
 
   useEffect(() => {
     fetchQuizData();
@@ -122,16 +125,28 @@ export default function QuizPage() {
       setCurrentCategoryIndex((prev) => prev + 1);
       window.scrollTo(0, 0);
     } else {
-      // Submit the quiz
-      await submitQuiz();
+      // Show email collection modal before submitting
+      setShowEmailModal(true);
     }
   };
 
-  const submitQuiz = async () => {
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const submitQuiz = async (includeEmail: boolean = true) => {
     if (!currentPartner || !quizData) return;
+
+    // Validate email if provided
+    if (includeEmail && email && !validateEmail(email)) {
+      setEmailError(t('invalidEmail'));
+      return;
+    }
 
     setIsSubmitting(true);
     setError('');
+    setEmailError('');
 
     try {
       const response = await fetch(`/api/quiz/${quizId}/submit`, {
@@ -140,6 +155,7 @@ export default function QuizPage() {
         body: JSON.stringify({
           partner: currentPartner,
           answers,
+          email: includeEmail && email ? email.trim() : undefined,
         }),
       });
 
@@ -147,6 +163,7 @@ export default function QuizPage() {
 
       if (!response.ok || data.error) {
         setError(data.error || t('errorSubmitting'));
+        setShowEmailModal(false);
         return;
       }
 
@@ -159,6 +176,7 @@ export default function QuizPage() {
     } catch (err) {
       console.error('Error submitting quiz:', err);
       setError(t('errorSubmitting'));
+      setShowEmailModal(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -294,6 +312,75 @@ export default function QuizPage() {
     4: ans('sure'),
     5: ans('yes'),
   };
+
+  // Show email collection modal
+  if (showEmailModal) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#f5f5f5]">
+        <Header />
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full">
+            <div className="text-center">
+              <div className="text-5xl mb-4">🎉</div>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">
+                {t('emailModalTitle', { name: partnerName })}
+              </h2>
+              <p className="text-gray-600 mb-6">
+                {currentPartner === 'A'
+                  ? t('emailModalDescA', { partner: otherPartnerName })
+                  : t('emailModalDescB')
+                }
+              </p>
+
+              <div className="mb-4">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setEmailError('');
+                  }}
+                  placeholder={t('emailPlaceholder')}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#8B3A3A] focus:ring-2 focus:ring-[#8B3A3A]/20"
+                />
+                {emailError && (
+                  <p className="text-red-500 text-sm mt-1">{emailError}</p>
+                )}
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-6 text-left">
+                <p className="text-green-800 text-sm">
+                  ✨ {t('emailBenefits')}
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <button
+                  onClick={() => submitQuiz(true)}
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-[#8B3A3A] to-[#6B2D2D] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#6B2D2D] hover:to-[#8B3A3A] transition-all disabled:opacity-50"
+                >
+                  {isSubmitting ? t('submitting') : t('saveAndContinueEmail')}
+                </button>
+                <button
+                  onClick={() => submitQuiz(false)}
+                  disabled={isSubmitting}
+                  className="w-full text-gray-500 py-2 px-6 text-sm hover:text-gray-700 transition-colors disabled:opacity-50"
+                >
+                  {t('skipEmail')}
+                </button>
+              </div>
+
+              <p className="text-xs text-gray-400 mt-4">
+                🔒 {t('emailPrivacy')}
+              </p>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f5f5]">

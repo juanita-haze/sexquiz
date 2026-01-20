@@ -98,7 +98,16 @@
     "shareModalLinkHint": "Envía este enlace a {partner} si están en otro dispositivo.",
     "shareModalSameDevice": "¿En un solo dispositivo? Tomen turnos, {partner} puede empezar después de que termines.",
     "shareModalSkipHint": "Puedes saltar cualquier pregunta. Solo las cosas que ambos digan SÍ aparecerán en los resultados.",
-    "startMyQuiz": "Comenzar Mi Quiz"
+    "startMyQuiz": "Comenzar Mi Quiz",
+    "emailModalTitle": "¡Buen trabajo, {name}! 🎉",
+    "emailModalDescA": "¡Terminaste tu parte! Ingresa tu email para recibir una notificación cuando {partner} complete la suya.",
+    "emailModalDescB": "¡Terminaste! Ingresa tu email para guardar tus resultados y recibir ofertas exclusivas.",
+    "emailPlaceholder": "tu@email.com",
+    "emailBenefits": "¡Recibe notificación cuando los resultados estén listos + consejos para darle sabor a tu relación!",
+    "saveAndContinueEmail": "Guardar y Continuar →",
+    "skipEmail": "Omitir por ahora",
+    "emailPrivacy": "Tu email es privado. Sin spam, nunca.",
+    "invalidEmail": "Por favor ingresa un email válido"
   },
   "share": {
     "completed": "¡Completaste tu parte!",
