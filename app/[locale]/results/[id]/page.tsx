@@ -257,7 +257,7 @@ export default function ResultsPage() {
       )}
 
       {/* Results Header */}
-      <section className="bg-gradient-to-b from-[#a83232] to-[#8b2828] text-white py-8 px-4">
+      <section className="bg-gradient-to-b from-[#C76B6B] to-[#A85555] text-white py-8 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="text-5xl mb-4">💕</div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2">{t('resultsReady')}</h1>
@@ -270,8 +270,8 @@ export default function ResultsPage() {
       {/* Quick nav */}
       <nav className="bg-white border-b border-gray-200 py-3 px-4 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex flex-wrap justify-center gap-4 text-sm">
-          <a href="#compatibility" className="text-[#a83232] hover:underline">{t('compatibilityLink')}</a>
-          <a href="#desires" className="text-[#a83232] hover:underline">{t('desiresLink')}</a>
+          <a href="#compatibility" className="text-[#C76B6B] hover:underline">{t('compatibilityLink')}</a>
+          <a href="#desires" className="text-[#C76B6B] hover:underline">{t('desiresLink')}</a>
         </div>
       </nav>
 
@@ -283,7 +283,7 @@ export default function ResultsPage() {
 
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-4xl font-bold text-[#a83232]">{matches.totalMatches}</p>
+                <p className="text-4xl font-bold text-[#C76B6B]">{matches.totalMatches}</p>
                 <p className="text-gray-500 text-sm">{t('matchingDesires', { count: matches.totalMatches })}</p>
               </div>
               <div className="text-right">
@@ -310,7 +310,7 @@ export default function ResultsPage() {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
-                    className="bg-gradient-to-r from-[#a83232] to-[#8b2828] h-3 rounded-full"
+                    className="bg-gradient-to-r from-[#C76B6B] to-[#A85555] h-3 rounded-full"
                     style={{ width: `${Math.min((matches.totalMatches / TOTAL_QUESTIONS) * 100, 100)}%` }}
                   />
                 </div>
@@ -393,7 +393,7 @@ export default function ResultsPage() {
 
             {/* Payment section */}
             {!isPaid && lockedCount > 0 && (
-              <div className="mt-8 p-6 bg-gradient-to-r from-[#a83232] to-[#8b2828] rounded-xl text-white">
+              <div className="mt-8 p-6 bg-gradient-to-r from-[#C76B6B] to-[#A85555] rounded-xl text-white">
                 {/* Limited time badge */}
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <span className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full animate-pulse">
@@ -466,7 +466,7 @@ export default function ResultsPage() {
 
                 <button
                   onClick={handlePayment}
-                  className="w-full bg-white text-[#a83232] py-4 px-6 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg"
+                  className="w-full bg-white text-[#C76B6B] py-4 px-6 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg"
                 >
                   {t('unlockAll', { count: matches.totalMatches })} - ${finalPrice.toFixed(2)}
                 </button>
@@ -486,7 +486,7 @@ export default function ResultsPage() {
               <h2 className="text-lg font-bold text-gray-800">{t('viewAnswersTitle')}</h2>
               <button
                 onClick={() => setShowAnswers(!showAnswers)}
-                className="text-[#a83232] text-sm hover:underline"
+                className="text-[#C76B6B] text-sm hover:underline"
               >
                 {showAnswers ? t('hide') : t('viewAnswers')}
               </button>
@@ -550,7 +550,7 @@ export default function ResultsPage() {
               </button>
               <Link
                 href="/feedback"
-                className="px-4 py-2 bg-[#a83232] text-white rounded-lg text-sm hover:bg-[#8b2828] transition-colors"
+                className="px-4 py-2 bg-[#C76B6B] text-white rounded-lg text-sm hover:bg-[#A85555] transition-colors"
               >
                 💬 {t('leaveFeedback')}
               </Link>
@@ -572,7 +572,7 @@ export default function ResultsPage() {
 
       {/* Sticky CTA for mobile */}
       {!isPaid && lockedCount > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#a83232] to-[#8b2828] p-4 shadow-lg md:hidden z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#C76B6B] to-[#A85555] p-4 shadow-lg md:hidden z-50">
           <div className="flex items-center justify-between gap-3">
             <div className="text-white">
               <p className="font-bold text-sm">{t('unlockAll', { count: matches.totalMatches })}</p>
@@ -583,7 +583,7 @@ export default function ResultsPage() {
             </div>
             <button
               onClick={handlePayment}
-              className="bg-white text-[#a83232] px-6 py-3 rounded-lg font-bold text-sm hover:bg-gray-100 transition-colors whitespace-nowrap"
+              className="bg-white text-[#C76B6B] px-6 py-3 rounded-lg font-bold text-sm hover:bg-gray-100 transition-colors whitespace-nowrap"
             >
               🔓 Unlock Now
             </button>

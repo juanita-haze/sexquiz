@@ -102,7 +102,7 @@ export default function HomePage() {
       <Header />
 
       {/* Hero + Form Section - Above the fold */}
-      <section className="bg-gradient-to-b from-[#a83232] to-[#8b2828] text-white py-8 px-4">
+      <section className="bg-gradient-to-b from-[#C76B6B] to-[#A85555] text-white py-8 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Left: Hero content */}
@@ -157,7 +157,7 @@ export default function HomePage() {
                       onClick={() => setQuizMode('quick')}
                       className={`py-3 px-4 rounded-lg text-center transition-all ${
                         quizMode === 'quick'
-                          ? 'bg-[#a83232] text-white shadow-md'
+                          ? 'bg-[#C76B6B] text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
@@ -170,7 +170,7 @@ export default function HomePage() {
                       onClick={() => setQuizMode('full')}
                       className={`py-3 px-4 rounded-lg text-center transition-all ${
                         quizMode === 'full'
-                          ? 'bg-[#a83232] text-white shadow-md'
+                          ? 'bg-[#C76B6B] text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
@@ -190,7 +190,7 @@ export default function HomePage() {
                       value={yourName}
                       onChange={(e) => setYourName(e.target.value)}
                       placeholder={t('yourNamePlaceholder')}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232] text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B] text-sm"
                       maxLength={50}
                     />
                   </div>
@@ -201,7 +201,7 @@ export default function HomePage() {
                       value={theirName}
                       onChange={(e) => setTheirName(e.target.value)}
                       placeholder={t('partnerNamePlaceholder')}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232] text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B] text-sm"
                       maxLength={50}
                     />
                   </div>
@@ -217,7 +217,7 @@ export default function HomePage() {
                         onClick={() => setYourAnatomy('male')}
                         className={`flex-1 py-2 text-center transition-colors text-xl ${
                           yourAnatomy === 'male'
-                            ? 'bg-[#a83232] text-white'
+                            ? 'bg-[#C76B6B] text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
                         }`}
                       >
@@ -228,7 +228,7 @@ export default function HomePage() {
                         onClick={() => setYourAnatomy('female')}
                         className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 text-xl ${
                           yourAnatomy === 'female'
-                            ? 'bg-[#a83232] text-white'
+                            ? 'bg-[#C76B6B] text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
                         }`}
                       >
@@ -244,7 +244,7 @@ export default function HomePage() {
                         onClick={() => setTheirAnatomy('male')}
                         className={`flex-1 py-2 text-center transition-colors text-xl ${
                           theirAnatomy === 'male'
-                            ? 'bg-[#a83232] text-white'
+                            ? 'bg-[#C76B6B] text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
                         }`}
                       >
@@ -255,7 +255,7 @@ export default function HomePage() {
                         onClick={() => setTheirAnatomy('female')}
                         className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 text-xl ${
                           theirAnatomy === 'female'
-                            ? 'bg-[#a83232] text-white'
+                            ? 'bg-[#C76B6B] text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
                         }`}
                       >
@@ -272,11 +272,11 @@ export default function HomePage() {
                       type="checkbox"
                       checked={isAgeVerified}
                       onChange={(e) => setIsAgeVerified(e.target.checked)}
-                      className="w-3 h-3 rounded border-gray-300 accent-[#a83232]"
+                      className="w-3 h-3 rounded border-gray-300 accent-[#C76B6B]"
                     />
                     <span>
                       {t('ageVerification')}{' '}
-                      <Link href="/terms" className="text-[#a83232] hover:underline">
+                      <Link href="/terms" className="text-[#C76B6B] hover:underline">
                         {t('termsLink')}
                       </Link>{' '}
                       {t('ageRequirement')}
@@ -292,7 +292,7 @@ export default function HomePage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-[#a83232] to-[#8b2828] text-white py-4 px-6 rounded-lg font-bold text-lg hover:from-[#8b2828] hover:to-[#a83232] transition-all disabled:opacity-50 shadow-lg"
+                  className="w-full bg-gradient-to-r from-[#C76B6B] to-[#A85555] text-white py-4 px-6 rounded-lg font-bold text-lg hover:from-[#A85555] hover:to-[#C76B6B] transition-all disabled:opacity-50 shadow-lg"
                 >
                   {isLoading ? t('starting') : `💕 ${t('startButton')}`}
                 </button>
@@ -309,7 +309,7 @@ export default function HomePage() {
       {/* Spice It Up Section */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#a83232] text-sm font-medium mb-2 uppercase tracking-wide">{t('spiceItUp')}</p>
+          <p className="text-[#C76B6B] text-sm font-medium mb-2 uppercase tracking-wide">{t('spiceItUp')}</p>
           <h2 className="text-2xl font-bold text-gray-800 mb-8">
             {t('spiceItUpTitle')}
           </h2>
@@ -346,14 +346,14 @@ export default function HomePage() {
       {/* How It Works Section */}
       <section className="py-12 px-4 bg-[#f5f5f5]">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#a83232] text-sm font-medium mb-2 uppercase tracking-wide">{t('howItWorks')}</p>
+          <p className="text-[#C76B6B] text-sm font-medium mb-2 uppercase tracking-wide">{t('howItWorks')}</p>
           <h2 className="text-2xl font-bold text-gray-800 mb-8">
             {t('howItWorksTitle')}
           </h2>
 
           <div className="space-y-6">
             <div className="flex gap-4">
-              <div className="font-bold text-[#a83232] text-lg">1.</div>
+              <div className="font-bold text-[#C76B6B] text-lg">1.</div>
               <div>
                 <h3 className="font-semibold text-gray-800">{t('step1Title')}</h3>
                 <p className="text-gray-600 text-sm">
@@ -362,7 +362,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex gap-4">
-              <div className="font-bold text-[#a83232] text-lg">2.</div>
+              <div className="font-bold text-[#C76B6B] text-lg">2.</div>
               <div>
                 <h3 className="font-semibold text-gray-800">{t('step2Title')}</h3>
                 <p className="text-gray-600 text-sm">
@@ -371,7 +371,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex gap-4">
-              <div className="font-bold text-[#a83232] text-lg">3.</div>
+              <div className="font-bold text-[#C76B6B] text-lg">3.</div>
               <div>
                 <h3 className="font-semibold text-gray-800">{t('step3Title')}</h3>
                 <p className="text-gray-600 text-sm">
@@ -386,7 +386,7 @@ export default function HomePage() {
       {/* Categories Section */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#a83232] text-sm font-medium mb-2 uppercase tracking-wide">{t('allQuestions')}</p>
+          <p className="text-[#C76B6B] text-sm font-medium mb-2 uppercase tracking-wide">{t('allQuestions')}</p>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">{t('allQuestionsTitle')}</h2>
           <p className="text-gray-600 mb-8">
             {t('allQuestionsDesc', { categories: categoryData.length, total: TOTAL_QUESTIONS })}

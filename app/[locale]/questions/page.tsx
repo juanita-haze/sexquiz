@@ -62,7 +62,7 @@ export default function QuestionsPage() {
             <p className="text-gray-600 mb-4">{t('readyDesc')}</p>
             <Link
               href="/"
-              className="inline-block bg-gradient-to-r from-[#a83232] to-[#8b2828] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#8b2828] hover:to-[#a83232] transition-all"
+              className="inline-block bg-gradient-to-r from-[#C76B6B] to-[#A85555] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#A85555] hover:to-[#C76B6B] transition-all"
             >
               {t('startQuiz')}
             </Link>

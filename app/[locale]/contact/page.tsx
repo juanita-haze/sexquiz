@@ -66,7 +66,7 @@ export default function ContactPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder={t('emailPlaceholder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B]"
                 />
               </div>
 
@@ -78,7 +78,7 @@ export default function ContactPage() {
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B]"
                 >
                   <option value="">{t('subjectPlaceholder')}</option>
                   <option value="feedback">{t('subjectFeedback')}</option>
@@ -100,14 +100,14 @@ export default function ContactPage() {
                   required
                   rows={5}
                   placeholder={t('messagePlaceholder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232] resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B] resize-none"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-[#a83232] to-[#8b2828] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#8b2828] hover:to-[#a83232] transition-all disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-[#C76B6B] to-[#A85555] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#A85555] hover:to-[#C76B6B] transition-all disabled:opacity-50"
               >
                 {isSubmitting ? common('loading') : t('sendButton')}
               </button>

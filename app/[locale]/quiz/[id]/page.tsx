@@ -200,7 +200,7 @@ export default function QuizPage() {
                 setLoading(true);
                 fetchQuizData();
               }}
-              className="mt-4 bg-[#a83232] text-white px-6 py-2 rounded-lg hover:bg-[#8b2828] transition-colors"
+              className="mt-4 bg-[#C76B6B] text-white px-6 py-2 rounded-lg hover:bg-[#A85555] transition-colors"
             >
               Reintentar
             </button>
@@ -254,7 +254,7 @@ export default function QuizPage() {
               </p>
               <button
                 onClick={() => setShowShareModal(false)}
-                className="w-full bg-gradient-to-r from-[#a83232] to-[#8b2828] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#8b2828] hover:to-[#a83232] transition-all"
+                className="w-full bg-gradient-to-r from-[#C76B6B] to-[#A85555] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#A85555] hover:to-[#C76B6B] transition-all"
               >
                 {t('startMyQuiz')}
               </button>
@@ -295,7 +295,7 @@ export default function QuizPage() {
             <span className="text-xs text-gray-500">
               {t('progressGlobal', { answered: globalProgress.answered, total: globalProgress.total })}
             </span>
-            <span className="text-xs font-bold text-[#a83232]">
+            <span className="text-xs font-bold text-[#C76B6B]">
               {globalProgress.percentage}%
             </span>
           </div>
@@ -311,13 +311,13 @@ export default function QuizPage() {
             <span className="text-sm text-gray-600">
               {t('roundProgress', { current: currentCategoryIndex + 1, total: totalCategories })}
             </span>
-            <span className="text-sm font-medium text-[#a83232]">
+            <span className="text-sm font-medium text-[#C76B6B]">
               {currentCategory.emoji} {cat(currentCategory.id)}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-gradient-to-r from-[#a83232] to-[#8b2828] h-2 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-[#C76B6B] to-[#A85555] h-2 rounded-full transition-all duration-300"
               style={{ width: `${((currentCategoryIndex + 1) / totalCategories) * 100}%` }}
             />
           </div>
@@ -325,7 +325,7 @@ export default function QuizPage() {
       </div>
 
       {/* Category header */}
-      <div className="bg-gradient-to-b from-[#a83232] to-[#8b2828] text-white py-6 px-4">
+      <div className="bg-gradient-to-b from-[#C76B6B] to-[#A85555] text-white py-6 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="text-4xl mb-2">{currentCategory.emoji}</div>
           <h1 className="text-2xl font-bold mb-1">{cat(currentCategory.id)}</h1>
@@ -351,7 +351,7 @@ export default function QuizPage() {
                     onClick={() => handleAnswer(question.id, option.value)}
                     className={`flex-1 min-w-[60px] py-2 px-3 rounded-lg text-sm font-medium transition-all ${
                       answers[question.id] === option.value
-                        ? 'bg-[#a83232] text-white shadow-md'
+                        ? 'bg-[#C76B6B] text-white shadow-md'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
@@ -371,7 +371,7 @@ export default function QuizPage() {
           <button
             onClick={handleNextCategory}
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-[#a83232] to-[#8b2828] text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-[#8b2828] hover:to-[#a83232] transition-all disabled:opacity-50 shadow-md"
+            className="w-full bg-gradient-to-r from-[#C76B6B] to-[#A85555] text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-[#A85555] hover:to-[#C76B6B] transition-all disabled:opacity-50 shadow-md"
           >
             {isSubmitting
               ? t('submitting')

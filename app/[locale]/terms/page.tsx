@@ -75,7 +75,7 @@ export default function TermsPage() {
                 <h2 className="text-xl font-bold text-gray-800 mb-2">{t('section10Title')}</h2>
                 <p className="text-gray-600">
                   {t('section10Text')}{' '}
-                  <Link href="/contact" className="text-[#a83232] hover:underline">
+                  <Link href="/contact" className="text-[#C76B6B] hover:underline">
                     {t('contactPage')}
                   </Link>
                   .
