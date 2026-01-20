@@ -50,7 +50,7 @@ export default function FeedbackPage() {
             <p className="text-gray-600 mb-6">{t('thankYouDesc')}</p>
             <Link
               href="/"
-              className="inline-block bg-gradient-to-r from-[#C76B6B] to-[#A85555] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#A85555] hover:to-[#C76B6B] transition-all"
+              className="inline-block bg-gradient-to-r from-[#B85555] to-[#9A4545] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#9A4545] hover:to-[#B85555] transition-all"
             >
               {t('backToHome')}
             </Link>
@@ -88,7 +88,7 @@ export default function FeedbackPage() {
                       onClick={() => setRating(index + 1)}
                       className={`text-3xl p-2 rounded-lg transition-all ${
                         rating === index + 1
-                          ? 'bg-[#C76B6B] scale-110'
+                          ? 'bg-[#B85555] scale-110'
                           : 'bg-gray-100 hover:bg-gray-200'
                       }`}
                     >
@@ -113,7 +113,7 @@ export default function FeedbackPage() {
                   onChange={(e) => setLiked(e.target.value)}
                   rows={3}
                   placeholder={t('likedPlaceholder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B] resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#B85555] resize-none"
                 />
               </div>
 
@@ -127,7 +127,7 @@ export default function FeedbackPage() {
                   onChange={(e) => setImprove(e.target.value)}
                   rows={3}
                   placeholder={t('improvePlaceholder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B] resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#B85555] resize-none"
                 />
               </div>
 
@@ -141,7 +141,7 @@ export default function FeedbackPage() {
                   onChange={(e) => setMissing(e.target.value)}
                   rows={3}
                   placeholder={t('missingPlaceholder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B] resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#B85555] resize-none"
                 />
               </div>
 
@@ -158,7 +158,7 @@ export default function FeedbackPage() {
                       onClick={() => setRecommend(option)}
                       className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                         recommend === option
-                          ? 'bg-[#C76B6B] text-white'
+                          ? 'bg-[#B85555] text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
@@ -180,7 +180,7 @@ export default function FeedbackPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('emailPlaceholder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#C76B6B]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#B85555]"
                 />
                 <p className="text-xs text-gray-500 mt-1">{t('emailHint')}</p>
               </div>
@@ -188,7 +188,7 @@ export default function FeedbackPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || !rating}
-                className="w-full bg-gradient-to-r from-[#C76B6B] to-[#A85555] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#A85555] hover:to-[#C76B6B] transition-all disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-[#B85555] to-[#9A4545] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#9A4545] hover:to-[#B85555] transition-all disabled:opacity-50"
               >
                 {isSubmitting ? common('loading') : t('submitButton')}
               </button>

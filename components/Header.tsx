@@ -10,7 +10,7 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="bg-[#C76B6B] py-3 px-4">
+    <header className="bg-[#B85555] py-3 px-4">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <Link href="/" className="text-xl sm:text-2xl font-bold text-white tracking-tight">
           🌶️ <span translate="no" className="notranslate">SpicyQuiz</span>

@@ -63,7 +63,7 @@ export default function SharePage() {
                 />
                 <button
                   onClick={handleCopy}
-                  className="px-4 py-2 bg-[#C76B6B] text-white rounded-lg font-medium hover:bg-[#A85555] transition-colors"
+                  className="px-4 py-2 bg-[#B85555] text-white rounded-lg font-medium hover:bg-[#9A4545] transition-colors"
                 >
                   {copied ? common('copied') : common('copy')}
                 </button>
@@ -100,19 +100,19 @@ export default function SharePage() {
               <h3 className="font-semibold text-gray-800 mb-2">{t('whyShareTitle')}</h3>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#C76B6B]">💕</span>
+                  <span className="text-[#B85555]">💕</span>
                   <span>{t('whyShare1')}</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#C76B6B]">💬</span>
+                  <span className="text-[#B85555]">💬</span>
                   <span>{t('whyShare2')}</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#C76B6B]">🔒</span>
+                  <span className="text-[#B85555]">🔒</span>
                   <span>{t('whyShare3')}</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#C76B6B]">⏱️</span>
+                  <span className="text-[#B85555]">⏱️</span>
                   <span>{t('whyShare4')}</span>
                 </li>
               </ul>

@@ -110,7 +110,7 @@ export default function SharePage() {
                 />
                 <button
                   onClick={handleCopy}
-                  className="px-4 py-2 bg-[#C76B6B] text-white rounded-lg text-sm font-medium hover:bg-[#A85555] transition-colors"
+                  className="px-4 py-2 bg-[#B85555] text-white rounded-lg text-sm font-medium hover:bg-[#9A4545] transition-colors"
                 >
                   {copied ? common('copied') : common('copy')}
                 </button>
@@ -143,7 +143,7 @@ export default function SharePage() {
             {/* View results link */}
             <Link
               href={`/results/${quizId}`}
-              className="inline-block mt-6 text-[#C76B6B] hover:underline text-sm"
+              className="inline-block mt-6 text-[#B85555] hover:underline text-sm"
             >
               {t('viewResults')} →
             </Link>
