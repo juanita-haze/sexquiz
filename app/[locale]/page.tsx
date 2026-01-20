@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
@@ -20,6 +20,22 @@ export default function HomePage() {
   const [isAgeVerified, setIsAgeVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [couplesActive, setCouplesActive] = useState(0);
+
+  // Simulate active couples counter
+  useEffect(() => {
+    const baseCount = Math.floor(Math.random() * 50) + 150; // 150-200
+    setCouplesActive(baseCount);
+
+    const interval = setInterval(() => {
+      setCouplesActive((prev) => {
+        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        return Math.max(100, Math.min(300, prev + change));
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleStartQuiz = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -238,6 +254,19 @@ export default function HomePage() {
             <p className="text-center text-gray-400 text-sm mt-3">
               📋 {t('questionCount', { count: TOTAL_QUESTIONS })} ⏱ {t('timeEstimate')}
             </p>
+
+            {/* Active couples counter */}
+            {couplesActive > 0 && (
+              <div className="mt-4 flex items-center justify-center gap-2">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+                <p className="text-green-600 text-sm font-medium">
+                  🔥 {t('couplesActive', { count: couplesActive })}
+                </p>
+              </div>
+            )}
           </form>
         </div>
       </section>

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { categoryData, answerOptionValues } from '@/lib/questions';
+import { categoryData, answerOptionValues, TOTAL_QUESTIONS } from '@/lib/questions';
 
 interface QuizData {
   id: string;
@@ -35,10 +35,32 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [showShareModal, setShowShareModal] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMilestone, setShowMilestone] = useState<number | null>(null);
+  const [lastMilestone, setLastMilestone] = useState(0);
 
   useEffect(() => {
     fetchQuizData();
   }, [quizId]);
+
+  // Calculate global progress
+  const globalProgress = useMemo(() => {
+    const answered = Object.keys(answers).length;
+    const percentage = Math.round((answered / TOTAL_QUESTIONS) * 100);
+    return { answered, percentage };
+  }, [answers]);
+
+  // Check for milestones
+  useEffect(() => {
+    const milestones = [25, 50, 75];
+    for (const milestone of milestones) {
+      if (globalProgress.percentage >= milestone && lastMilestone < milestone) {
+        setShowMilestone(milestone);
+        setLastMilestone(milestone);
+        setTimeout(() => setShowMilestone(null), 3000);
+        break;
+      }
+    }
+  }, [globalProgress.percentage, lastMilestone]);
 
   const fetchQuizData = async () => {
     try {
@@ -245,9 +267,35 @@ export default function QuizPage() {
     <div className="min-h-screen flex flex-col bg-[#f5f5f5]">
       <Header />
 
+      {/* Milestone celebration popup */}
+      {showMilestone && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-3 rounded-full shadow-lg font-bold text-lg">
+            🎉 {showMilestone === 25 ? t('milestone25') : showMilestone === 50 ? t('milestone50') : t('milestone75')}
+          </div>
+        </div>
+      )}
+
       {/* Progress bar */}
       <div className="bg-white border-b border-gray-200 py-3 px-4 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto">
+          {/* Global progress */}
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-gray-500">
+              {t('progressGlobal', { answered: globalProgress.answered, total: TOTAL_QUESTIONS })}
+            </span>
+            <span className="text-xs font-bold text-[#a83232]">
+              {globalProgress.percentage}%
+            </span>
+          </div>
+          <div className="w-full bg-gray-100 rounded-full h-1.5 mb-3">
+            <div
+              className="bg-gradient-to-r from-green-400 to-green-600 h-1.5 rounded-full transition-all duration-300"
+              style={{ width: `${globalProgress.percentage}%` }}
+            />
+          </div>
+
+          {/* Category progress */}
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">
               {t('roundProgress', { current: currentCategoryIndex + 1, total: totalCategories })}

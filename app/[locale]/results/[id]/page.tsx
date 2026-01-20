@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { useParams, useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
@@ -8,6 +8,38 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { categoryData, answerOptionValues, TOTAL_QUESTIONS } from '@/lib/questions';
 import { calculateMatches, getTeaserMatches, MatchResult, MatchSummary } from '@/lib/matching';
+
+// Countdown timer hook
+function useCountdown(hours: number = 24) {
+  const [timeLeft, setTimeLeft] = useState(() => {
+    if (typeof window === 'undefined') return hours * 60 * 60;
+    const saved = localStorage.getItem('countdown_end');
+    if (saved) {
+      const endTime = parseInt(saved);
+      const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      return remaining > 0 ? remaining : hours * 60 * 60;
+    }
+    const endTime = Date.now() + hours * 60 * 60 * 1000;
+    localStorage.setItem('countdown_end', endTime.toString());
+    return hours * 60 * 60;
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 0) return 0;
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const hours_left = Math.floor(timeLeft / 3600);
+  const minutes_left = Math.floor((timeLeft % 3600) / 60);
+  const seconds_left = timeLeft % 60;
+
+  return { hours: hours_left, minutes: minutes_left, seconds: seconds_left, total: timeLeft };
+}
 
 interface QuizData {
   id: string;
@@ -37,6 +69,8 @@ export default function ResultsPage() {
   const [referralStatus, setReferralStatus] = useState<'idle' | 'valid' | 'invalid'>('idle');
   const [showAnswers, setShowAnswers] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
+  const [couplesCount] = useState(() => Math.floor(Math.random() * 30) + 45); // 45-75 couples
+  const countdown = useCountdown(24);
 
   useEffect(() => {
     fetchQuizData();
@@ -194,9 +228,12 @@ export default function ResultsPage() {
     );
   }
 
-  const teaserMatches = getTeaserMatches(matches.allMatches, 5);
+  const teaserMatches = getTeaserMatches(matches.allMatches, 8);
   const displayMatches = isPaid ? matches.allMatches : teaserMatches;
   const lockedCount = matches.totalMatches - teaserMatches.length;
+  const originalPrice = 14.99;
+  const salePrice = 4.95;
+  const finalPrice = referralDiscount > 0 ? salePrice * (1 - referralDiscount / 100) : salePrice;
   const averageMatches = 15;
   const averageCompatibility = 42;
 
@@ -357,8 +394,49 @@ export default function ResultsPage() {
             {/* Payment section */}
             {!isPaid && lockedCount > 0 && (
               <div className="mt-8 p-6 bg-gradient-to-r from-[#a83232] to-[#8b2828] rounded-xl text-white">
-                <h3 className="text-lg font-bold mb-2">{t('unlockAll', { count: matches.totalMatches })}</h3>
-                <p className="text-white/80 text-sm mb-4">{t('stickyUnlock')}</p>
+                {/* Limited time badge */}
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <span className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full animate-pulse">
+                    ⚡ {t('limitedOffer')}
+                  </span>
+                </div>
+
+                {/* Countdown timer */}
+                <div className="bg-black/20 rounded-lg p-3 mb-4">
+                  <p className="text-white/70 text-xs text-center mb-2">{t('timerExpires')}</p>
+                  <div className="flex justify-center gap-3 text-center">
+                    <div>
+                      <span className="text-2xl font-bold">{String(countdown.hours).padStart(2, '0')}</span>
+                      <span className="text-xs block text-white/60">{t('hours')}</span>
+                    </div>
+                    <span className="text-2xl font-bold">:</span>
+                    <div>
+                      <span className="text-2xl font-bold">{String(countdown.minutes).padStart(2, '0')}</span>
+                      <span className="text-xs block text-white/60">{t('minutes')}</span>
+                    </div>
+                    <span className="text-2xl font-bold">:</span>
+                    <div>
+                      <span className="text-2xl font-bold">{String(countdown.seconds).padStart(2, '0')}</span>
+                      <span className="text-xs block text-white/60">{t('seconds')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-bold mb-2 text-center">{t('unlockAll', { count: matches.totalMatches })}</h3>
+
+                {/* Price with anchor */}
+                <div className="text-center mb-4">
+                  <span className="text-white/60 line-through text-lg">${originalPrice.toFixed(2)}</span>
+                  <span className="text-3xl font-bold ml-2">${finalPrice.toFixed(2)}</span>
+                  <p className="text-green-300 text-sm mt-1">
+                    {t('savingAmount', { amount: `$${(originalPrice - finalPrice).toFixed(2)}` })}
+                  </p>
+                </div>
+
+                {/* Social proof */}
+                <p className="text-white/70 text-xs text-center mb-4">
+                  🔥 {t('couplesUnlocked', { count: couplesCount })}
+                </p>
 
                 {/* Referral code */}
                 <div className="mb-4">
@@ -388,18 +466,12 @@ export default function ResultsPage() {
 
                 <button
                   onClick={handlePayment}
-                  className="w-full bg-white text-[#a83232] py-3 px-6 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors"
+                  className="w-full bg-white text-[#a83232] py-4 px-6 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg"
                 >
-                  {referralDiscount > 0 ? (
-                    <>
-                      <span className="line-through text-gray-400 mr-2">$9.99</span>
-                      ${(9.99 * (1 - referralDiscount / 100)).toFixed(2)}
-                    </>
-                  ) : (
-                    '$9.99'
-                  )}{' '}
-                  - {t('unlockAll', { count: matches.totalMatches })}
+                  {t('unlockAll', { count: matches.totalMatches })} - ${finalPrice.toFixed(2)}
                 </button>
+
+                <p className="text-white/60 text-xs text-center mt-3">{t('stickyUnlock')}</p>
               </div>
             )}
           </div>
@@ -497,6 +569,30 @@ export default function ResultsPage() {
       </section>
 
       <Footer />
+
+      {/* Sticky CTA for mobile */}
+      {!isPaid && lockedCount > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#a83232] to-[#8b2828] p-4 shadow-lg md:hidden z-50">
+          <div className="flex items-center justify-between gap-3">
+            <div className="text-white">
+              <p className="font-bold text-sm">{t('unlockAll', { count: matches.totalMatches })}</p>
+              <p className="text-xs text-white/70">
+                <span className="line-through">${originalPrice.toFixed(2)}</span>
+                <span className="font-bold ml-1">${finalPrice.toFixed(2)}</span>
+              </p>
+            </div>
+            <button
+              onClick={handlePayment}
+              className="bg-white text-[#a83232] px-6 py-3 rounded-lg font-bold text-sm hover:bg-gray-100 transition-colors whitespace-nowrap"
+            >
+              🔓 Unlock Now
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Spacer for sticky CTA */}
+      {!isPaid && lockedCount > 0 && <div className="h-20 md:hidden" />}
     </div>
   );
 }

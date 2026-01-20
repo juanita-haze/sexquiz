@@ -77,14 +77,14 @@ export function calculateMatches(
 }
 
 // Get teaser matches (free preview)
-export function getTeaserMatches(matches: MatchResult[], count: number = 5): MatchResult[] {
+export function getTeaserMatches(matches: MatchResult[], count: number = 8): MatchResult[] {
   const perfect = matches.filter((m) => m.strength === 'perfect');
   const good = matches.filter((m) => m.strength === 'good');
 
   const teaser: MatchResult[] = [];
 
-  // Add up to 3 perfect matches
-  teaser.push(...perfect.slice(0, Math.min(3, count)));
+  // Add up to 5 perfect matches (increased from 3)
+  teaser.push(...perfect.slice(0, Math.min(5, count)));
 
   // Fill remaining with good matches
   const remaining = count - teaser.length;
