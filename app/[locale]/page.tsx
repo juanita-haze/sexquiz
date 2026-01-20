@@ -93,7 +93,7 @@ export default function HomePage() {
 
       {/* Quiz Form Section */}
       <section className="py-8 px-4 -mt-6">
-        <div className="max-w-md mx-auto">
+        <div className="max-w-2xl mx-auto">
           <form
             onSubmit={handleStartQuiz}
             className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
@@ -102,99 +102,102 @@ export default function HomePage() {
               {t('formTitle')}
             </h2>
 
-            {/* Your Info */}
-            <div className="mb-6">
-              <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide">{t('yourInfo')}</p>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm text-gray-600 mb-1">
-                    👤 {t('nameLabel')}
-                  </label>
-                  <input
-                    type="text"
-                    value={yourName}
-                    onChange={(e) => setYourName(e.target.value)}
-                    placeholder={t('yourNamePlaceholder')}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232]"
-                    maxLength={50}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-600 mb-2">
-                    {t('anatomyLabel')} 🔒
-                  </label>
-                  <div className="flex rounded-lg overflow-hidden border border-gray-300">
-                    <button
-                      type="button"
-                      onClick={() => setYourAnatomy('male')}
-                      className={`flex-1 py-2 text-center transition-colors ${
-                        yourAnatomy === 'male'
-                          ? 'bg-[#a83232] text-white'
-                          : 'bg-white text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      🍆
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setYourAnatomy('female')}
-                      className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 ${
-                        yourAnatomy === 'female'
-                          ? 'bg-[#a83232] text-white'
-                          : 'bg-white text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      🍑
-                    </button>
+            {/* Both Info Sections Side by Side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Your Info */}
+              <div>
+                <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide">{t('yourInfo')}</p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">
+                      👤 {t('nameLabel')}
+                    </label>
+                    <input
+                      type="text"
+                      value={yourName}
+                      onChange={(e) => setYourName(e.target.value)}
+                      placeholder={t('yourNamePlaceholder')}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232]"
+                      maxLength={50}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-2">
+                      {t('anatomyLabel')} 🔒
+                    </label>
+                    <div className="flex rounded-lg overflow-hidden border border-gray-300">
+                      <button
+                        type="button"
+                        onClick={() => setYourAnatomy('male')}
+                        className={`flex-1 py-2 text-center transition-colors ${
+                          yourAnatomy === 'male'
+                            ? 'bg-[#a83232] text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        🍆
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setYourAnatomy('female')}
+                        className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 ${
+                          yourAnatomy === 'female'
+                            ? 'bg-[#a83232] text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        🍑
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Partner Info */}
-            <div className="mb-6">
-              <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide">{t('partnerInfo')}</p>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm text-gray-600 mb-1">
-                    👤 {t('nameLabel')}
-                  </label>
-                  <input
-                    type="text"
-                    value={theirName}
-                    onChange={(e) => setTheirName(e.target.value)}
-                    placeholder={t('partnerNamePlaceholder')}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232]"
-                    maxLength={50}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-600 mb-2">
-                    {t('anatomyLabel')} 🔒
-                  </label>
-                  <div className="flex rounded-lg overflow-hidden border border-gray-300">
-                    <button
-                      type="button"
-                      onClick={() => setTheirAnatomy('male')}
-                      className={`flex-1 py-2 text-center transition-colors ${
-                        theirAnatomy === 'male'
-                          ? 'bg-[#a83232] text-white'
-                          : 'bg-white text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      🍆
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setTheirAnatomy('female')}
-                      className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 ${
-                        theirAnatomy === 'female'
-                          ? 'bg-[#a83232] text-white'
-                          : 'bg-white text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      🍑
-                    </button>
+              {/* Partner Info */}
+              <div>
+                <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide">{t('partnerInfo')}</p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">
+                      👤 {t('nameLabel')}
+                    </label>
+                    <input
+                      type="text"
+                      value={theirName}
+                      onChange={(e) => setTheirName(e.target.value)}
+                      placeholder={t('partnerNamePlaceholder')}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232]"
+                      maxLength={50}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-2">
+                      {t('anatomyLabel')} 🔒
+                    </label>
+                    <div className="flex rounded-lg overflow-hidden border border-gray-300">
+                      <button
+                        type="button"
+                        onClick={() => setTheirAnatomy('male')}
+                        className={`flex-1 py-2 text-center transition-colors ${
+                          theirAnatomy === 'male'
+                            ? 'bg-[#a83232] text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        🍆
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTheirAnatomy('female')}
+                        className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 ${
+                          theirAnatomy === 'female'
+                            ? 'bg-[#a83232] text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        🍑
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
