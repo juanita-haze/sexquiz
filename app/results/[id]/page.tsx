@@ -83,6 +83,12 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
   const [error, setError] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
+  // Referral code state
+  const [referralCode, setReferralCode] = useState('');
+  const [referralDiscount, setReferralDiscount] = useState(0);
+  const [referralValid, setReferralValid] = useState<boolean | null>(null);
+  const [referralChecking, setReferralChecking] = useState(false);
+
   const success = searchParams.get('success');
 
   useEffect(() => {
@@ -120,12 +126,48 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
     });
   };
 
+  const validateReferralCode = async () => {
+    if (!referralCode.trim()) {
+      setReferralValid(null);
+      setReferralDiscount(0);
+      return;
+    }
+
+    setReferralChecking(true);
+    try {
+      const response = await fetch('/api/referral/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: referralCode.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        setReferralValid(true);
+        setReferralDiscount(data.discount_percent || 0);
+      } else {
+        setReferralValid(false);
+        setReferralDiscount(0);
+      }
+    } catch (error) {
+      console.error('Error validating code:', error);
+      setReferralValid(false);
+      setReferralDiscount(0);
+    } finally {
+      setReferralChecking(false);
+    }
+  };
+
   const handleUnlock = async () => {
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quizId: id }),
+        body: JSON.stringify({
+          quizId: id,
+          referralCode: referralValid ? referralCode.trim() : null,
+        }),
       });
 
       const data = await response.json();
@@ -140,6 +182,11 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
       alert('Error creating checkout. Please try again.');
     }
   };
+
+  // Calculate discounted price
+  const discountedPrice = referralDiscount > 0
+    ? UNLOCK_PRICE * (1 - referralDiscount / 100)
+    : UNLOCK_PRICE;
 
   if (isLoading) {
     return (
@@ -454,14 +501,66 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
               You have {matchSummary.totalMatches} shared sexual desires. Your shared desires are listed below.
             </p>
 
-            {/* Unlock Button */}
+            {/* Unlock Section with Referral Code */}
             {!isPaid && matchSummary.totalMatches > 0 && (
-              <button
-                onClick={handleUnlock}
-                className="w-full py-3 bg-orange-400 hover:bg-orange-500 text-white font-bold rounded-lg mb-6 transition-colors"
-              >
-                Unlock all {matchSummary.totalMatches} matches - ${UNLOCK_PRICE.toFixed(2)}
-              </button>
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                {/* Referral Code Input */}
+                <div className="mb-4">
+                  <label className="block text-sm text-gray-600 mb-2">
+                    🎁 Have a referral code?
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={referralCode}
+                      onChange={(e) => {
+                        setReferralCode(e.target.value.toUpperCase());
+                        setReferralValid(null);
+                      }}
+                      placeholder="Enter code"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-gray-800 uppercase"
+                    />
+                    <button
+                      onClick={validateReferralCode}
+                      disabled={referralChecking || !referralCode.trim()}
+                      className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 disabled:opacity-50"
+                    >
+                      {referralChecking ? '...' : 'Apply'}
+                    </button>
+                  </div>
+                  {referralValid === true && (
+                    <p className="text-green-600 text-sm mt-1">
+                      ✓ Code applied! {referralDiscount > 0 ? `${referralDiscount}% discount` : 'Valid code'}
+                    </p>
+                  )}
+                  {referralValid === false && (
+                    <p className="text-red-500 text-sm mt-1">
+                      ✗ Invalid or expired code
+                    </p>
+                  )}
+                </div>
+
+                {/* Price Display */}
+                <div className="text-center mb-4">
+                  {referralDiscount > 0 ? (
+                    <div>
+                      <span className="text-gray-400 line-through text-lg">${UNLOCK_PRICE.toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-green-600 ml-2">${discountedPrice.toFixed(2)}</span>
+                      <span className="text-green-600 text-sm ml-1">({referralDiscount}% off)</span>
+                    </div>
+                  ) : (
+                    <span className="text-2xl font-bold text-gray-800">${UNLOCK_PRICE.toFixed(2)}</span>
+                  )}
+                </div>
+
+                {/* Unlock Button */}
+                <button
+                  onClick={handleUnlock}
+                  className="w-full py-3 bg-orange-400 hover:bg-orange-500 text-white font-bold rounded-lg transition-colors"
+                >
+                  Unlock all {matchSummary.totalMatches} matches
+                </button>
+              </div>
             )}
 
             {/* Categories Accordion */}
@@ -535,7 +634,8 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
                 onClick={handleUnlock}
                 className="w-full py-3 bg-orange-400 hover:bg-orange-500 text-white font-bold rounded-lg mt-6 transition-colors"
               >
-                Unlock all {matchSummary.totalMatches} matches - ${UNLOCK_PRICE.toFixed(2)}
+                Unlock all {matchSummary.totalMatches} matches - ${discountedPrice.toFixed(2)}
+                {referralDiscount > 0 && <span className="text-sm ml-1">({referralDiscount}% off)</span>}
               </button>
             )}
           </section>
@@ -579,7 +679,8 @@ export default function ResultsPage({ params }: { params: Promise<{ id: string }
               onClick={handleUnlock}
               className="bg-orange-400 hover:bg-orange-500 text-white font-bold px-6 py-2 rounded-lg transition-colors"
             >
-              Unlock all {matchSummary.totalMatches} matches - ${UNLOCK_PRICE.toFixed(2)}
+              Unlock all {matchSummary.totalMatches} matches - ${discountedPrice.toFixed(2)}
+              {referralDiscount > 0 && <span className="text-sm ml-1">({referralDiscount}% off)</span>}
             </button>
           </div>
         </div>

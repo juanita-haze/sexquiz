@@ -25,5 +25,28 @@ export interface QuizSession {
   partner_b_answers: Record<string, number> | null;
   paid: boolean;
   stripe_session_id: string | null;
+  amount_paid: number;
+  referral_code: string | null;
+  discount_applied: number;
+  created_at: string;
+}
+
+export interface ReferralCode {
+  id: string;
+  code: string;
+  influencer_name: string;
+  discount_percent: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReferralStats {
+  code: string;
+  influencer_name: string;
+  discount_percent: number;
+  is_active: boolean;
+  total_uses: number;
+  total_revenue: number;
   created_at: string;
 }
