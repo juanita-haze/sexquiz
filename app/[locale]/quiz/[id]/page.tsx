@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { categoryData, answerOptionValues, TOTAL_QUESTIONS } from '@/lib/questions';
+import { categoryData, answerOptionValues, TOTAL_QUESTIONS, QUICK_QUIZ_TOTAL, getQuickQuizCategories } from '@/lib/questions';
 
 interface QuizData {
   id: string;
@@ -37,17 +37,24 @@ export default function QuizPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMilestone, setShowMilestone] = useState<number | null>(null);
   const [lastMilestone, setLastMilestone] = useState(0);
+  const [quizMode, setQuizMode] = useState<'quick' | 'full'>('full');
 
   useEffect(() => {
     fetchQuizData();
+    // Read quiz mode from localStorage
+    const savedMode = localStorage.getItem(`quiz_mode_${quizId}`);
+    if (savedMode === 'quick' || savedMode === 'full') {
+      setQuizMode(savedMode);
+    }
   }, [quizId]);
 
   // Calculate global progress
   const globalProgress = useMemo(() => {
+    const totalQ = quizMode === 'quick' ? QUICK_QUIZ_TOTAL : TOTAL_QUESTIONS;
     const answered = Object.keys(answers).length;
-    const percentage = Math.round((answered / TOTAL_QUESTIONS) * 100);
-    return { answered, percentage };
-  }, [answers]);
+    const percentage = Math.round((answered / totalQ) * 100);
+    return { answered, percentage, total: totalQ };
+  }, [answers, quizMode]);
 
   // Check for milestones
   useEffect(() => {
@@ -206,8 +213,12 @@ export default function QuizPage() {
 
   const partnerName = currentPartner === 'A' ? quizData.partner_a_name : quizData.partner_b_name;
   const otherPartnerName = currentPartner === 'A' ? quizData.partner_b_name : quizData.partner_a_name;
-  const currentCategory = categoryData[currentCategoryIndex];
-  const totalCategories = categoryData.length;
+
+  // Get categories based on quiz mode
+  const quizCategories = quizMode === 'quick' ? getQuickQuizCategories() : categoryData;
+  const totalQuestions = quizMode === 'quick' ? QUICK_QUIZ_TOTAL : TOTAL_QUESTIONS;
+  const currentCategory = quizCategories[currentCategoryIndex];
+  const totalCategories = quizCategories.length;
 
   // Show share modal for partner A before starting
   if (showShareModal && currentPartner === 'A') {
@@ -282,7 +293,7 @@ export default function QuizPage() {
           {/* Global progress */}
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs text-gray-500">
-              {t('progressGlobal', { answered: globalProgress.answered, total: TOTAL_QUESTIONS })}
+              {t('progressGlobal', { answered: globalProgress.answered, total: globalProgress.total })}
             </span>
             <span className="text-xs font-bold text-[#a83232]">
               {globalProgress.percentage}%

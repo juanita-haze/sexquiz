@@ -187,6 +187,38 @@ export const allQuestionIds: Question[] = categoryData.flatMap((cat) => cat.ques
 
 export const TOTAL_QUESTIONS = allQuestionIds.length;
 
+// Quick quiz: 30 essential questions (most popular, less extreme)
+export const quickQuizQuestionIds = new Set([
+  // Basics (8) - everyday desires
+  'b1', 'b2', 'b3', 'b4', 'b5', 'b7', 'b11', 'b14',
+  // Roleplay (4) - fun and accessible
+  'r1', 'r6', 'r7', 'r10',
+  // Anal (2) - just the basics
+  'a1', 'a2',
+  // Positions (4) - common positions
+  'p1', 'p2', 'p3', 'p9',
+  // BDSM (5) - lighter options
+  'd1', 'd2', 'd4', 'd5', 'd7',
+  // Location (3) - fun settings
+  'f4', 'f7', 'f9',
+  // Toys (2) - most popular
+  't1', 't7',
+  // Body (2) - general preferences
+  'o4', 'o6',
+]);
+
+export const QUICK_QUIZ_TOTAL = quickQuizQuestionIds.size;
+
+// Get categories filtered for quick quiz
+export function getQuickQuizCategories(): Category[] {
+  return categoryData
+    .map((cat) => ({
+      ...cat,
+      questions: cat.questions.filter((q) => quickQuizQuestionIds.has(q.id)),
+    }))
+    .filter((cat) => cat.questions.length > 0);
+}
+
 // Answer options with emojis (labels come from translations)
 export const answerOptionValues = [
   { value: 1, emoji: '🤮' },

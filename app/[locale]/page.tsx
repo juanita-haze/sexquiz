@@ -6,7 +6,7 @@ import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { categoryData, TOTAL_QUESTIONS } from '@/lib/questions';
+import { categoryData, TOTAL_QUESTIONS, QUICK_QUIZ_TOTAL } from '@/lib/questions';
 
 export default function HomePage() {
   const t = useTranslations('home');
@@ -21,6 +21,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [couplesActive, setCouplesActive] = useState(0);
+  const [quizMode, setQuizMode] = useState<'quick' | 'full'>('quick');
 
   // Simulate active couples counter
   useEffect(() => {
@@ -67,6 +68,7 @@ export default function HomePage() {
           partner_b_name: theirName.trim(),
           partner_a_anatomy: yourAnatomy,
           partner_b_anatomy: theirAnatomy,
+          quiz_mode: quizMode,
         }),
       });
 
@@ -78,6 +80,8 @@ export default function HomePage() {
       }
 
       if (data.id) {
+        // Store quiz mode in localStorage for the quiz page to read
+        localStorage.setItem(`quiz_mode_${data.id}`, quizMode);
         router.push(`/quiz/${data.id}`);
       } else {
         setError(t('errorCreatingQuiz'));
@@ -90,62 +94,128 @@ export default function HomePage() {
     }
   };
 
+  const questionCount = quizMode === 'quick' ? QUICK_QUIZ_TOTAL : TOTAL_QUESTIONS;
+  const timeEstimate = quizMode === 'quick' ? t('timeEstimateQuick') : t('timeEstimate');
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f5f5]">
       <Header />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-[#a83232] to-[#8b2828] text-white py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="text-6xl mb-4">💕</div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            {t('heroTitle')}
-          </h1>
-          <p className="text-lg text-white/90 mb-2">
-            {t('heroSubtitle')}
-          </p>
-        </div>
-      </section>
+      {/* Hero + Form Section - Above the fold */}
+      <section className="bg-gradient-to-b from-[#a83232] to-[#8b2828] text-white py-8 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Left: Hero content */}
+            <div className="text-center lg:text-left">
+              <div className="text-5xl mb-4">💕</div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                {t('heroTitle')}
+              </h1>
+              <p className="text-lg text-white/90 mb-4">
+                {t('heroSubtitle')}
+              </p>
 
-      {/* Quiz Form Section */}
-      <section className="py-8 px-4 -mt-6">
-        <div className="max-w-2xl mx-auto">
-          <form
-            onSubmit={handleStartQuiz}
-            className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
-          >
-            <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
-              {t('formTitle')}
-            </h2>
+              {/* Active couples counter */}
+              {couplesActive > 0 && (
+                <div className="flex items-center justify-center lg:justify-start gap-2 mb-4">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                  </span>
+                  <p className="text-green-300 text-sm font-medium">
+                    🔥 {t('couplesActive', { count: couplesActive })}
+                  </p>
+                </div>
+              )}
 
-            {/* Both Info Sections Side by Side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              {/* Your Info */}
-              <div>
-                <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide">{t('yourInfo')}</p>
-                <div className="space-y-3">
+              {/* Trust badges - visible on large screens */}
+              <div className="hidden lg:flex flex-wrap gap-4 mt-6">
+                <div className="flex items-center gap-2 text-white/80 text-sm">
+                  <span>🔒</span> {t('privacyTitle')}
+                </div>
+                <div className="flex items-center gap-2 text-white/80 text-sm">
+                  <span>⏱</span> {t('quickTitle')}
+                </div>
+                <div className="flex items-center gap-2 text-white/80 text-sm">
+                  <span>👍</span> {t('trustedTitle')}
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Compact Form */}
+            <div>
+              <form
+                onSubmit={handleStartQuiz}
+                className="bg-white rounded-xl shadow-2xl p-6"
+              >
+                {/* Quiz Mode Toggle */}
+                <div className="mb-5">
+                  <p className="text-sm text-gray-500 mb-2 text-center">{t('quizModeLabel')}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setQuizMode('quick')}
+                      className={`py-3 px-4 rounded-lg text-center transition-all ${
+                        quizMode === 'quick'
+                          ? 'bg-[#a83232] text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <span className="text-lg">⚡</span>
+                      <p className="font-semibold">{t('quizModeQuick')}</p>
+                      <p className="text-xs opacity-80">{t('quizModeQuickDesc')}</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuizMode('full')}
+                      className={`py-3 px-4 rounded-lg text-center transition-all ${
+                        quizMode === 'full'
+                          ? 'bg-[#a83232] text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      <span className="text-lg">🔥</span>
+                      <p className="font-semibold">{t('quizModeFull')}</p>
+                      <p className="text-xs opacity-80">{t('quizModeFullDesc')}</p>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Names row */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
                   <div>
-                    <label className="block text-sm text-gray-600 mb-1">
-                      👤 {t('nameLabel')}
-                    </label>
+                    <label className="block text-xs text-gray-500 mb-1">{t('yourInfo')}</label>
                     <input
                       type="text"
                       value={yourName}
                       onChange={(e) => setYourName(e.target.value)}
                       placeholder={t('yourNamePlaceholder')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232]"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232] text-sm"
                       maxLength={50}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-600 mb-2">
-                      {t('anatomyLabel')} 🔒
-                    </label>
+                    <label className="block text-xs text-gray-500 mb-1">{t('partnerInfo')}</label>
+                    <input
+                      type="text"
+                      value={theirName}
+                      onChange={(e) => setTheirName(e.target.value)}
+                      placeholder={t('partnerNamePlaceholder')}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232] text-sm"
+                      maxLength={50}
+                    />
+                  </div>
+                </div>
+
+                {/* Anatomy row */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">{t('anatomyLabel')}</label>
                     <div className="flex rounded-lg overflow-hidden border border-gray-300">
                       <button
                         type="button"
                         onClick={() => setYourAnatomy('male')}
-                        className={`flex-1 py-2 text-center transition-colors ${
+                        className={`flex-1 py-2 text-center transition-colors text-xl ${
                           yourAnatomy === 'male'
                             ? 'bg-[#a83232] text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
@@ -156,7 +226,7 @@ export default function HomePage() {
                       <button
                         type="button"
                         onClick={() => setYourAnatomy('female')}
-                        className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 ${
+                        className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 text-xl ${
                           yourAnatomy === 'female'
                             ? 'bg-[#a83232] text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
@@ -166,35 +236,13 @@ export default function HomePage() {
                       </button>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Partner Info */}
-              <div>
-                <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide">{t('partnerInfo')}</p>
-                <div className="space-y-3">
                   <div>
-                    <label className="block text-sm text-gray-600 mb-1">
-                      👤 {t('nameLabel')}
-                    </label>
-                    <input
-                      type="text"
-                      value={theirName}
-                      onChange={(e) => setTheirName(e.target.value)}
-                      placeholder={t('partnerNamePlaceholder')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-[#a83232]"
-                      maxLength={50}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-2">
-                      {t('anatomyLabel')} 🔒
-                    </label>
+                    <label className="block text-xs text-gray-500 mb-1">{t('anatomyLabel')}</label>
                     <div className="flex rounded-lg overflow-hidden border border-gray-300">
                       <button
                         type="button"
                         onClick={() => setTheirAnatomy('male')}
-                        className={`flex-1 py-2 text-center transition-colors ${
+                        className={`flex-1 py-2 text-center transition-colors text-xl ${
                           theirAnatomy === 'male'
                             ? 'bg-[#a83232] text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
@@ -205,7 +253,7 @@ export default function HomePage() {
                       <button
                         type="button"
                         onClick={() => setTheirAnatomy('female')}
-                        className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 ${
+                        className={`flex-1 py-2 text-center transition-colors border-l border-gray-300 text-xl ${
                           theirAnatomy === 'female'
                             ? 'bg-[#a83232] text-white'
                             : 'bg-white text-gray-700 hover:bg-gray-100'
@@ -216,58 +264,45 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Terms checkbox */}
-            <div className="mt-6 text-center text-sm text-gray-500">
-              <label className="flex items-center justify-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isAgeVerified}
-                  onChange={(e) => setIsAgeVerified(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 accent-[#a83232]"
-                />
-                <span>
-                  {t('ageVerification')}{' '}
-                  <Link href="/terms" className="text-[#a83232] hover:underline">
-                    {t('termsLink')}
-                  </Link>{' '}
-                  {t('ageRequirement')}
-                </span>
-              </label>
-            </div>
+                {/* Terms - simplified */}
+                <div className="text-center text-xs text-gray-400 mb-4">
+                  <label className="flex items-center justify-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isAgeVerified}
+                      onChange={(e) => setIsAgeVerified(e.target.checked)}
+                      className="w-3 h-3 rounded border-gray-300 accent-[#a83232]"
+                    />
+                    <span>
+                      {t('ageVerification')}{' '}
+                      <Link href="/terms" className="text-[#a83232] hover:underline">
+                        {t('termsLink')}
+                      </Link>{' '}
+                      {t('ageRequirement')}
+                    </span>
+                  </label>
+                </div>
 
-            {error && (
-              <p className="text-red-500 text-sm text-center mt-4">{error}</p>
-            )}
+                {error && (
+                  <p className="text-red-500 text-sm text-center mb-3">{error}</p>
+                )}
 
-            {/* Start Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full mt-6 bg-gradient-to-r from-[#a83232] to-[#8b2828] text-white py-3 px-6 rounded-lg font-semibold text-lg hover:from-[#8b2828] hover:to-[#a83232] transition-all disabled:opacity-50 shadow-md"
-            >
-              {isLoading ? t('starting') : `💕 ${t('startButton')}`}
-            </button>
+                {/* Start Button */}
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-[#a83232] to-[#8b2828] text-white py-4 px-6 rounded-lg font-bold text-lg hover:from-[#8b2828] hover:to-[#a83232] transition-all disabled:opacity-50 shadow-lg"
+                >
+                  {isLoading ? t('starting') : `💕 ${t('startButton')}`}
+                </button>
 
-            <p className="text-center text-gray-400 text-sm mt-3">
-              📋 {t('questionCount', { count: TOTAL_QUESTIONS })} ⏱ {t('timeEstimate')}
-            </p>
-
-            {/* Active couples counter */}
-            {couplesActive > 0 && (
-              <div className="mt-4 flex items-center justify-center gap-2">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                </span>
-                <p className="text-green-600 text-sm font-medium">
-                  🔥 {t('couplesActive', { count: couplesActive })}
+                <p className="text-center text-gray-400 text-xs mt-3">
+                  📋 {t('questionCount', { count: questionCount })} ⏱ {timeEstimate}
                 </p>
-              </div>
-            )}
-          </form>
+              </form>
+            </div>
+          </div>
         </div>
       </section>
 
